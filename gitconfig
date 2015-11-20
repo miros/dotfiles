@@ -1,0 +1,37 @@
+[push]
+    default = tracking
+[color]
+    diff = auto
+    status = auto
+    branch = auto
+    interactive = auto
+[diff]
+    renamelimit = 0
+[merge]
+    summary = true
+    tool = vimdiff
+[alias]
+    st = status
+    cm = commit
+    br = branch -v
+    co = checkout
+    lg = log --pretty=format:\"%h %Cblue%ar %Cgreen%an%Creset: %s %Cred%d\"
+    ll = log -10 --pretty=format:\"%h %Cblue%ar %Cgreen%an%Creset: %s %Cred%d\"
+    gr = log --graph --pretty=format:\"%Cred%h %Cblue%ar%Creset %Cgreen%an%Creset %s %Cred%d\"
+    where = branch -av --contains
+[core]
+	excludesfile = /Users/miros/.gitignore
+  pager = less -FRSX
+[github]
+	user = miros
+
+
+[user]
+	name = m.malkin
+	email = mmalkin@fun-box.ru
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true

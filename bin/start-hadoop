@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+$HADOOP_HOME/libexec/sbin/start-dfs.sh &&
+$HADOOP_HOME/libexec/sbin/start-yarn.sh &&
+/usr/local/Cellar/hbase/0.98.8/libexec/bin/start-hbase.sh &&
+$HADOOP_HOME/libexec/sbin/mr-jobhistory-daemon.sh start historyserver
