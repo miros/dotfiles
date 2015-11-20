@@ -10,6 +10,7 @@ git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
 git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
 
 rbenv install 2.2.3
+rbenv global 2.2.3
 gem install bundler pry awesome_print
 
 wget https://thoughtbot.github.io/rcm/debs/rcm_1.3.0-1_all.deb
