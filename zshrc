@@ -59,7 +59,4 @@ eval "$(rbenv init -)"
 export JAVA_HOME=$(/usr/libexec/java_home -v 1.7)
 source ${HOME}/scripts/colorize_mvn
 
-# Node Version Manager - Simple bash script to manage multiple active node.js versions
-source /usr/local/opt/nvm/nvm.sh
-
 source ~/.zsh_local
