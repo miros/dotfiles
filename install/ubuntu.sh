@@ -3,6 +3,7 @@ sudo apt-get install zsh
 sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+sudo apt-get install exuberant-ctags
 vim +PluginInstall +qall
 
 git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
