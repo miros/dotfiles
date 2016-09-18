@@ -7,6 +7,7 @@
     interactive = auto
 [diff]
     renamelimit = 0
+	compactionHeuristic = true
 [merge]
     summary = true
     tool = vimdiff
@@ -19,9 +20,11 @@
     ll = log -10 --pretty=format:\"%h %Cblue%ar %Cgreen%an%Creset: %s %Cred%d\"
     gr = log --graph --pretty=format:\"%Cred%h %Cblue%ar%Creset %Cgreen%an%Creset %s %Cred%d\"
     where = branch -av --contains
+    lt = for-each-ref --format='%(authordate): %(refname)' --sort=-authordate --count=10 refs/tags
+    lb = for-each-ref --format='%(authordate): %(refname:short)' --sort=-committerdate --count=10 refs/heads/
 [core]
-	excludesfile = /Users/miros/.gitignore
-  pager = less -FRSX
+    excludesfile = /Users/miros/.gitignore
+    pager = less -FRSX
 [github]
 	user = miros
 
@@ -31,7 +34,7 @@
 	email = mmalkin@fun-box.ru
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+	path =
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true

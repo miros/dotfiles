@@ -30,9 +30,13 @@ source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 
+bindkey \^U backward-kill-line
+
 unsetopt auto_name_dirs
 
 export EDITOR=vim
+
+alias gr='grep'
 
 alias rake='noglob rake'
 
@@ -43,12 +47,16 @@ alias bopen='EDITOR=subl bundle open'
 alias rc='rebar compile'
 alias rt='rebar eunit skip_deps=true'
 
-alias gr='grep'
-
 alias hfs='hadoop fs'
 
 # log queries
 alias psql='psql -eL /tmp/psql.log'
+
+# docker
+alias docker_gc_containers='docker rm `docker ps --no-trunc -aq`'
+alias docker_gc_images='docker images -q --filter "dangling=true" | xargs docker rmi'
+
+alias notify_me='terminal-notifier -message "Task Done"'
 
 PATH=/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
@@ -56,7 +64,15 @@ PATH=$PATH:$HOME/bin
 export PATH=$HOME/.rbenv/bin:$PATH
 eval "$(rbenv init -)"
 
-export JAVA_HOME=$(/usr/libexec/java_home -v 1.7)
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 source ${HOME}/scripts/colorize_mvn
 
+export FZF_CTRL_T_COMMAND="command find -L . \\( -path './\\.*' -o -fstype 'dev' -o -fstype 'proc' \\) -prune \
+    -o -type f -print \
+    -o -type d -print \
+    -o -type l -print 2> /dev/null | sed 1d | cut -b3-"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 source ~/.zsh_local
+
