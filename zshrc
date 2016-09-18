@@ -24,7 +24,7 @@ CASE_SENSITIVE="true"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git bundler pj osx)
+plugins=(git osx history pj)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -35,11 +35,16 @@ bindkey \^U backward-kill-line
 unsetopt auto_name_dirs
 
 export EDITOR=vim
+alias v="vim"
+
+export PAGER=less
+export LESS="-MQR"
 
 alias gr='grep'
+alias g='grep --color=auto'
+alias ll='ls -laG'
 
 alias rake='noglob rake'
-
 alias migrate='bundle exec rake db:migrate db:test:clone_structure'
 alias reset_test_db='RAILS_ENV=test bundle exec rake db:migrate:reset'
 alias bopen='EDITOR=subl bundle open'
