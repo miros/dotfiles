@@ -9,12 +9,13 @@ vim +PluginInstall +qall
 git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
 git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
 
-rbenv install 2.2.3
-rbenv global 2.2.3
+rbenv install 2.3.1
+rbenv global 2.3.1
 gem install bundler pry awesome_print
 
-wget https://thoughtbot.github.io/rcm/debs/rcm_1.3.0-1_all.deb
-sudo dpkg -i rcm_1.3.0-1_all.deb
+sudo add-apt-repository ppa:martin-frost/thoughtbot-rcm
+sudo apt-get update
+sudo apt-get install rcm
 
 rcup -U .oh-my-zsh/custom/plugins/pj -U scripts -U bin -x install
 

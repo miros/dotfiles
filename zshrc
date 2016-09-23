@@ -69,6 +69,9 @@ PATH=$PATH:$HOME/bin
 export PATH=$HOME/.rbenv/bin:$PATH
 eval "$(rbenv init -)"
 
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+
 export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 source ${HOME}/scripts/colorize_mvn
 
