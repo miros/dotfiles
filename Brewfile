@@ -1,3 +1,4 @@
+brew "perl"
 brew "zsh"
 brew "vim"
 brew "mc"
