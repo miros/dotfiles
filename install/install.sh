@@ -13,7 +13,7 @@ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 vim +PluginInstall +qall
 
 # rbenv
-$RBENV_PATH=~/.rbenv
+RBENV_PATH=~/.rbenv
 
 git clone https://github.com/sstephenson/rbenv.git $RBENV_PATH
 git clone https://github.com/sstephenson/ruby-build.git $RBENV_PATH/plugins/ruby-build

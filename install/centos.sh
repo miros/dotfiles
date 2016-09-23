@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-sudo yum groupinstall 'Development Tools' && sudo yum install curl git python-setuptools ruby
+sudo yum -y groupinstall 'Development Tools' && sudo yum -y install curl git python-setuptools ruby zsh
 
 . ~/.dotfiles/linux.sh
