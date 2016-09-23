@@ -10,12 +10,12 @@ sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install
 
 [ -f ~/.zshrc.pre-oh-my-zsh ] && cat ~/.zshrc.pre-oh-my-zsh >> ~/.zsh_local
 
+# link dotfiles
+rcup -U .oh-my-zsh/custom/plugins/pj -U scripts -U bin -x install
+
 # vim
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 vim +PluginInstall +qall
-
-# link dotfiles
-rcup -U .oh-my-zsh/custom/plugins/pj -U scripts -U bin -x install
 
 # rbenv
 RBENV_PATH=~/.rbenv
@@ -30,7 +30,7 @@ rbenv install 2.3.1
 rbenv global 2.3.1
 gem install bundler pry awesome_print
 
-# .zsh_local
+# projects
 mkdir -p $HOME/projects
 echo 'export PROJECTS=$HOME/projects' >> ~/.zsh_local
 

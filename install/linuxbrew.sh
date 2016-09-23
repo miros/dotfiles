@@ -13,4 +13,6 @@ echo 'export PATH="$HOME/.linuxbrew/bin:$PATH"' >> ~/.zshrc
 echo 'export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"' >>~/.zshrc
 echo 'export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"' >>~/.zshrc
 
-. ~/.dotfiles/install.sh
+brew tap thoughtbot/formulae
+brew install rcm
+brew install fzf
