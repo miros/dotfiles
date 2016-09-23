@@ -80,7 +80,6 @@ export FZF_CTRL_T_COMMAND="command find -L . \\( -path './\\.*' -o -fstype 'dev'
     -o -type d -print \
     -o -type l -print 2> /dev/null | sed 1d | cut -b3-"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
 source ~/.zsh_local
 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
