@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 
 # linuxbrew
@@ -8,23 +9,8 @@ echo 'export PATH="$HOME/.linuxbrew/bin:$PATH"' >> ~/.bash_profile
 echo 'export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"' >>~/.bash_profile
 echo 'export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"' >>~/.bash_profile
 
-# brewtap
-brew tap Homebrew/bundle
-$(cd ~/.dotfiles && brew bundle)
+echo 'export PATH="$HOME/.linuxbrew/bin:$PATH"' >> ~/.zshrc
+echo 'export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"' >>~/.zshrc
+echo 'export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"' >>~/.zshrc
 
-# oh-my-zsh
-sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
-
-# vim
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-vim +PluginInstall +qall
-
-# rbenv
-$RBENV_PATH=~/.rbenv
-
-git clone https://github.com/sstephenson/rbenv.git $RBENV_PATH
-git clone https://github.com/sstephenson/ruby-build.git $RBENV_PATH/plugins/ruby-build
-
-$RBENV_PATH/bin/rbenv install 2.3.1
-$RBENV_PATH/bin/rbenv global 2.3.1
-$RBENV_PATH/bin/gem install bundler pry awesome_print
+. ~/.dotfiles/install.sh

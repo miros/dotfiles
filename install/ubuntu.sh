@@ -1,22 +1,6 @@
 #!/bin/bash
-sudo apt-get install zsh
-sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+set -e
 
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-sudo apt-get install exuberant-ctags
-vim +PluginInstall +qall
+sudo apt-get install build-essential curl git python-setuptools ruby
 
-git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
-git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
-
-rbenv install 2.3.1
-rbenv global 2.3.1
-gem install bundler pry awesome_print
-
-sudo add-apt-repository ppa:martin-frost/thoughtbot-rcm
-sudo apt-get update
-sudo apt-get install rcm
-
-rcup -U .oh-my-zsh/custom/plugins/pj -U scripts -U bin -x install
-
-echo 'export PROJECTS=$HOME/projects' > ~/.zsh_local
+. ~/.dotfiles/linux.sh
