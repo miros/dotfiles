@@ -72,8 +72,10 @@ eval "$(rbenv init -)"
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
-export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
-source ${HOME}/scripts/colorize_mvn
+if [ -d /usr/libexec/java_home ]; then
+  export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+  source ${HOME}/scripts/colorize_mvn
+fi
 
 export FZF_CTRL_T_COMMAND="command find -L . \\( -path './\\.*' -o -fstype 'dev' -o -fstype 'proc' \\) -prune \
     -o -type f -print \
