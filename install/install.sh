@@ -3,7 +3,7 @@ set -e
 
 # brewtap
 brew tap Homebrew/bundle
-$(cd ~/.dotfiles && brew bundle -v)
+(cd ~/.dotfiles && brew bundle -v)
 
 # oh-my-zsh
 sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
