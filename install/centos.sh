@@ -2,4 +2,12 @@
 set -e
 
 sudo yum -y groupinstall 'Development Tools'
-sudo yum -y install curl git python-setuptools ruby zsh vim mc git ctags screen
+sudo yum -y install \
+  zsh \
+  curl \
+  git \
+  vim \
+  mc \
+  screen \
+  tmux \
+  ruby

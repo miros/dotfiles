@@ -1,4 +1,13 @@
 #!/bin/bash
 set -e
 
-sudo apt-get install build-essential curl git python-setuptools ruby zsh vim mc git ctags screen
+sudo apt-get -y install build-essential
+sudo apt-get -y install \
+  zsh \
+  curl \
+  git \
+  vim \
+  mc \
+  screen \
+  tmux \
+  ruby
