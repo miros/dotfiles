@@ -29,7 +29,6 @@ Plugin 'Keithbsmiley/rspec.vim'
 
 Plugin 'dyng/ctrlsf.vim'
 Plugin 'mileszs/ack.vim'
-Plugin 'rking/ag.vim'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 
