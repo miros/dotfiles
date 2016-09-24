@@ -1,3 +1,5 @@
+set shell=bash
+
 set nocompatible              " be iMproved
 filetype off                  " required!
 
@@ -8,24 +10,49 @@ call vundle#rc()
 " required!
 Bundle 'gmarik/vundle'
 
-Bundle 'tpope/vim-fugitive'
-Bundle 'rosstimson/scala-vim-support'
-Bundle 'Xuyuanp/git-nerdtree'
-Bundle 'mileszs/ack.vim'
-Bundle 'bling/vim-airline'
-Bundle 'corntrace/bufexplorer'
-Bundle 'vim-scripts/VimClojure'
-Bundle 'mattn/codepad-vim'
-Bundle 'mattn/webapi-vim'
-Bundle 'mattn/gist-vim'
-Bundle 'tpope/vim-rails'
-Bundle 'vim-scripts/taglist.vim'
-Bundle 'Keithbsmiley/rspec.vim'
-Bundle 'terryma/vim-multiple-cursors'
-Bundle 'miros/vimfiles'
-Bundle 'ingydotnet/yaml-vim'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'motus/pig.vim'
-Bundle 'elixir-lang/vim-elixir'
+" Lang support
 
-filetype plugin indent on     " required!
+Plugin 'rosstimson/scala-vim-support'
+Plugin 'vim-scripts/VimClojure'
+Plugin 'ingydotnet/yaml-vim'
+Plugin 'motus/pig.vim'
+Plugin 'elixir-lang/vim-elixir'
+Plugin 'lambdatoast/elm.vim'
+Plugin 'evanmiller/nginx-vim-syntax'
+
+" Framework support
+
+Plugin 'tpope/vim-rails'
+Plugin 'Keithbsmiley/rspec.vim'
+
+" Search helpers
+
+Plugin 'dyng/ctrlsf.vim'
+Plugin 'mileszs/ack.vim'
+Plugin 'rking/ag.vim'
+
+" Common goodies
+
+Plugin 'corntrace/bufexplorer'
+Plugin 'Xuyuanp/git-nerdtree'
+Plugin 'bling/vim-airline'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'tpope/vim-fugitive'
+Plugin 'scrooloose/nerdcommenter'
+
+" Remote services
+
+Plugin 'mattn/codepad-vim'
+Plugin 'mattn/webapi-vim'
+Plugin 'mattn/gist-vim'
+
+" Custom configs
+Plugin 'miros/vimfiles'
+
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+if filereadable(glob("~/.vimrc.local"))
+    source ~/.vimrc.local
+endif
+
