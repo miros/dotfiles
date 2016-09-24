@@ -32,7 +32,7 @@ alias v="vim"
 export PAGER=less
 export LESS="-MQR"
 
-alias gr='grep'
+alias gr='grep --color=auto'
 alias g='grep --color=auto'
 alias ll='ls -laG'
 
@@ -60,8 +60,10 @@ alias vssh='vagrant ssh'
 PATH=/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
-export PATH=$HOME/.rbenv/bin:$PATH
-eval "$(rbenv init -)"
+if [ -d $HOME/.rbenv ]; then
+  export PATH=$HOME/.rbenv/bin:$PATH
+  eval "$(rbenv init -)"
+fi
 
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
