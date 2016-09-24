@@ -1,34 +1,26 @@
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="robbyrussell"
-
-# Set to this to use case-sensitive completion
 CASE_SENSITIVE="true"
+HIST_STAMPS="yyyy-mm-dd"
 
-# Comment this out to disable weekly auto-update checks
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment following line if you want to disable colors in ls
-# DISABLE_LS_COLORS="true"
-
-# Uncomment following line if you want to disable autosetting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-# COMPLETION_WAITING_DOTS="true"
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git osx history pj)
+plugins=(git history osx pj)
 
 source $ZSH/oh-my-zsh.sh
 
-# Customize to your needs...
+local ret_status="%(?:%{$fg_bold[green]%}>:%{$fg_bold[red]%}>)"
+PROMPT='%{$fg[red]%}%n%{$reset_color%}@%{$fg[green]%}%m%{$reset_color%}:%{$fg[white]%}%~%{$reset_color%}$(git_prompt_info)$(git_remote_status) ${ret_status}%{$reset_color%}'
+
+ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[cyan]%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg_bold[red]%}*"
+
+ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE=" %{$fg[yellow]%}B%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE=" %{$fg[yellow]%}A%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE=" %{$fg_bold[red]%}D%{$reset_color%}"
+
+export LANG="ru_RU.UTF-8"
+export LC_ALL="ru_RU.UTF-8"
 
 bindkey \^U backward-kill-line
 
@@ -63,6 +55,8 @@ alias docker_gc_images='docker images -q --filter "dangling=true" | xargs docker
 
 alias notify_me='terminal-notifier -message "Task Done"'
 
+alias vssh='vagrant ssh'
+
 PATH=/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
@@ -82,6 +76,6 @@ export FZF_CTRL_T_COMMAND="command find -L . \\( -path './\\.*' -o -fstype 'dev'
     -o -type d -print \
     -o -type l -print 2> /dev/null | sed 1d | cut -b3-"
 
-source ~/.zsh_local
+[ -f ~/.zsh_local ] && source ~/.zsh_local
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
