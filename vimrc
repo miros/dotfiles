@@ -20,6 +20,8 @@ Plugin 'lambdatoast/elm.vim'
 Plugin 'evanmiller/nginx-vim-syntax'
 Plugin 'fatih/vim-go'
 
+Plugin 'editorconfig/editorconfig-vim'
+
 " Framework support
 
 Plugin 'tpope/vim-rails'
