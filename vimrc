@@ -41,7 +41,7 @@ Plugin 'Xuyuanp/git-nerdtree'
 Plugin 'bling/vim-airline'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'tpope/vim-fugitive'
-Plugin 'scrooloose/nerdcommenter'
+Plugin 'tomtom/tcomment_vim'
 
 " Custom configs
 Plugin 'miros/vimfiles'
