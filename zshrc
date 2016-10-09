@@ -34,7 +34,7 @@ export LESS="-MQR"
 
 alias gr='grep --color=auto'
 alias g='grep --color=auto'
-alias ll='ls -laG'
+alias ll='ls -laGh'
 
 alias rake='noglob rake'
 alias migrate='bundle exec rake db:migrate db:test:clone_structure'
