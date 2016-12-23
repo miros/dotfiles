@@ -57,6 +57,8 @@ alias notify_me='terminal-notifier -message "Task Done"'
 
 alias vssh='vagrant ssh'
 
+alias be='bundle exec'
+
 PATH=/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
