@@ -59,6 +59,10 @@ alias vssh='vagrant ssh'
 
 alias be='bundle exec'
 
+alias mixc='mix compile'
+
+alias git-amend-f='git add . && git commit --amend --no-edit && git push -f'
+
 PATH=/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
