@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# /usr/local/Cellar/hbase/1.1.4/libexec/bin/stop-hbase.sh &&
-$HADOOP_HOME/libexec/sbin/mr-jobhistory-daemon.sh stop historyserver &&
-$HADOOP_HOME/libexec/sbin/stop-yarn.sh &&
-$HADOOP_HOME/libexec/sbin/stop-dfs.sh
+$HADOOP_BIN/mr-jobhistory-daemon.sh stop historyserver &&
+$HADOOP_BIN/stop-yarn.sh &&
+$HADOOP_BIN/stop-dfs.sh

@@ -63,7 +63,9 @@ alias mixc='mix compile'
 
 alias git-amend-f='git add . && git commit --amend --no-edit && git push -f'
 
-PATH=/usr/local/bin:$PATH # for homebrew
+alias start-proxy='/usr/local/opt/squid/sbin/squid -N -d 1'
+
+PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
 if [ -d $HOME/.rbenv ]; then
@@ -83,6 +85,8 @@ export FZF_CTRL_T_COMMAND="command find -L . \\( -path './\\.*' -o -fstype 'dev'
     -o -type f -print \
     -o -type d -print \
     -o -type l -print 2> /dev/null | sed 1d | cut -b3-"
+
+export ERL_AFLAGS="-kernel shell_history enabled"
 
 [ -f ~/.zsh_local ] && source ~/.zsh_local
 
