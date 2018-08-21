@@ -18,6 +18,6 @@ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 vim +PluginInstall +qall
 
 # projects
-mkdir -p $HOME/projects
-echo 'export PROJECTS=$HOME/projects' >> ~/.zsh_local
+mkdir -p $HOME/pjs
+echo 'export PROJECTS=$HOME/pjs' >> ~/.zsh_local
 
