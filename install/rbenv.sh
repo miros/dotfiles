@@ -7,6 +7,6 @@ git clone https://github.com/sstephenson/ruby-build.git $RBENV_PATH/plugins/ruby
 
 eval "$(rbenv init -)"
 
-rbenv install 2.3.1
-rbenv global 2.3.1
+rbenv install 2.5.0
+rbenv global 2.5.0
 gem install bundler pry awesome_print
