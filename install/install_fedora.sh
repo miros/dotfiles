@@ -12,7 +12,9 @@ sudo dnf -y install \
   screen \
   tmux \
   ruby \
-  fzf
+  fzf \
+  bat \
+  fd
 
 sudo dnf -y copr enable seeitcoming/rcm
 sudo dnf install rcm
