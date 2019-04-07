@@ -23,7 +23,7 @@
     lt = for-each-ref --format='%(authordate): %(refname)' --sort=-authordate --count=10 refs/tags
     lb = for-each-ref --format='%(authordate): %(refname:short)' --sort=-committerdate --count=10 refs/heads/
 [core]
-    excludesfile = /Users/miros/.gitignore
+    excludesfile = ~/.gitignore
     pager = less -FRSX
 [github]
 	user = miros
