@@ -19,8 +19,8 @@ ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE=" %{$fg[yellow]%}B%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE=" %{$fg[yellow]%}A%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE=" %{$fg_bold[red]%}D%{$reset_color%}"
 
-export LANG="ru_RU.UTF-8"
-export LC_ALL="ru_RU.UTF-8"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 
 bindkey \^U backward-kill-line
 
@@ -65,6 +65,9 @@ alias git-amend-f='git add . && git commit --amend --no-edit && git push -f'
 
 alias start-proxy='/usr/local/opt/squid/sbin/squid -N -d 1'
 
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
+
 PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
@@ -86,7 +89,7 @@ export FZF_CTRL_T_COMMAND="command find -L . \\( -path './\\.*' -o -fstype 'dev'
     -o -type d -print \
     -o -type l -print 2> /dev/null | sed 1d | cut -b3-"
 
-export ERL_AFLAGS="-kernel shell_history enabled"
+export ERL_AFLAGS="-kernel shell_history enabled -kernel shell_history_file_bytes 1024000"
 
 [ -f ~/.zsh_local ] && source ~/.zsh_local
 

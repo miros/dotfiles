@@ -7,3 +7,6 @@
 .bundle
 .sublimelinterrc
 .vscode
+.classpath
+.project
+.settings
