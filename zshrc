@@ -68,6 +68,8 @@ alias start-proxy='/usr/local/opt/squid/sbin/squid -N -d 1'
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 
+alias k='kubectl'
+
 PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
