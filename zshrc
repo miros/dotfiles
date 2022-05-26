@@ -4,7 +4,7 @@ ZSH=$HOME/.oh-my-zsh
 CASE_SENSITIVE="true"
 HIST_STAMPS="yyyy-mm-dd"
 
-plugins=(git history osx pj)
+plugins=(git history macos pj)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -61,7 +61,7 @@ alias be='bundle exec'
 
 alias mixc='mix compile'
 
-alias git-amend-f='git add . && git commit --amend --no-edit && git push -f'
+alias git-amend-f='git add . && git commit --amend --no-edit && git push --force-with-lease'
 
 alias start-proxy='/usr/local/opt/squid/sbin/squid -N -d 1'
 

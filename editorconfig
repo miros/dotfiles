@@ -19,7 +19,7 @@ indent_style = space
 indent_size = 2
 
 [**.{js,scss,coffee}]
-indent_style = tab
+indent_style = space
 
 [**.{yaml,yml}]
 indent_style = space
