@@ -37,14 +37,6 @@ alias g='grep --color=auto'
 alias ll='ls -laGh'
 
 alias rake='noglob rake'
-alias migrate='bundle exec rake db:migrate db:test:clone_structure'
-alias reset_test_db='RAILS_ENV=test bundle exec rake db:migrate:reset'
-alias bopen='EDITOR=subl bundle open'
-
-alias rc='rebar compile'
-alias rt='rebar eunit skip_deps=true'
-
-alias hfs='hadoop fs'
 
 # log queries
 alias psql='psql -eL /tmp/psql.log'
@@ -55,15 +47,7 @@ alias docker_gc_images='docker images -q --filter "dangling=true" | xargs docker
 
 alias notify_me='terminal-notifier -message "Task Done"'
 
-alias vssh='vagrant ssh'
-
-alias be='bundle exec'
-
-alias mixc='mix compile'
-
 alias git-amend-f='git add . && git commit --amend --no-edit && git push --force-with-lease'
-
-alias start-proxy='/usr/local/opt/squid/sbin/squid -N -d 1'
 
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
@@ -81,10 +65,9 @@ fi
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
-if [ -d /usr/libexec/java_home ]; then
-  export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
-  source ${HOME}/scripts/colorize_mvn
-fi
+# if [ -d /usr/libexec/java_home ]; then
+#   export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+# fi
 
 export FZF_CTRL_T_COMMAND="command find -L . \\( -path './\\.*' -o -fstype 'dev' -o -fstype 'proc' \\) -prune \
     -o -type f -print \

@@ -11,13 +11,9 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " Lang support
-"Plugin 'rosstimson/scala-vim-support'
-"Plugin 'vim-scripts/VimClojure'
 Plugin 'ingydotnet/yaml-vim'
 Plugin 'motus/pig.vim'
 Plugin 'elixir-lang/vim-elixir'
-"Plugin 'lambdatoast/elm.vim'
-Plugin 'evanmiller/nginx-vim-syntax'
 Plugin 'fatih/vim-go'
 
 Plugin 'editorconfig/editorconfig-vim'

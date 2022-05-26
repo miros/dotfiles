@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-$HADOOP_BIN/mr-jobhistory-daemon.sh stop historyserver &&
-$HADOOP_BIN/stop-yarn.sh &&
-$HADOOP_BIN/stop-dfs.sh
