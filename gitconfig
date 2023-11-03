@@ -28,15 +28,8 @@
 [github]
 	user = miros
 
-
 [user]
-	name = m.malkin
-	email = mmalkin@fun-box.ru
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+	name = miros
+	email = mirosm@mirosm.ru
 [pull]
 	rebase = true

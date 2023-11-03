@@ -54,6 +54,8 @@ alias pbpaste='xclip -selection clipboard -o'
 
 alias k='kubectl'
 
+alias docker='nerdctl'
+
 PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
