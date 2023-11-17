@@ -9,7 +9,10 @@ plugins=(git history macos pj)
 source $ZSH/oh-my-zsh.sh
 
 local ret_status="%(?:%{$fg_bold[green]%}>:%{$fg_bold[red]%}>)"
-PROMPT='%{$fg[red]%}%n%{$reset_color%}@%{$fg[green]%}%m%{$reset_color%}:%{$fg[white]%}%(5~|%-3~/…/%1~|%4~)%{$reset_color%}$(git_prompt_info)$(git_remote_status) ${ret_status}%{$reset_color%}'
+
+# %{$fg[red]%}%n%{$reset_color%}@%{$fg[green]%}%m%{$reset_color%}:
+
+PROMPT='%{$fg[white]%}%(5~|%-3~/…/%1~|%4~)%{$reset_color%}$(git_prompt_info)$(git_remote_status) ${ret_status}%{$reset_color%}'
 
 ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[cyan]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
@@ -48,6 +51,7 @@ alias docker_gc_images='docker images -q --filter "dangling=true" | xargs docker
 alias notify_me='terminal-notifier -message "Task Done"'
 
 alias git-amend-f='git add . && git commit --amend --no-edit && git push --force-with-lease'
+alias git-rebase-main='git co main && git pull && git co - && git rebase main'
 
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
