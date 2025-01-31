@@ -1,3 +1,4 @@
+gitconfig
 [push]
     default = tracking
 [color]
@@ -8,6 +9,7 @@
 [diff]
     renamelimit = 0
 	compactionHeuristic = true
+    # external = difft
 [merge]
     summary = true
     tool = vimdiff
@@ -22,14 +24,24 @@
     where = branch -av --contains
     lt = for-each-ref --format='%(authordate): %(refname)' --sort=-authordate --count=10 refs/tags
     lb = for-each-ref --format='%(authordate): %(refname:short)' --sort=-committerdate --count=10 refs/heads/
+    dd = -c diff.external=difft diff
+    dl = -c diff.external=difft log --ext-diff
+    dlp = -c diff.external=difft log -p --ext-diff
+    ds = -c diff.external=difft show --ext-diff
+    df = -c diff.external=difft diff
 [core]
     excludesfile = ~/.gitignore
     pager = less -FRSX
 [github]
 	user = miros
-
 [user]
 	name = miros
 	email = mirosm@mirosm.ru
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path =
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
 [pull]
 	rebase = true
