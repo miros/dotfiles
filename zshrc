@@ -58,8 +58,6 @@ alias pbpaste='xclip -selection clipboard -o'
 
 alias k='kubectl'
 
-alias docker='nerdctl'
-
 PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
@@ -81,6 +79,8 @@ export FZF_CTRL_T_COMMAND="command find -L . \\( -path './\\.*' -o -fstype 'dev'
     -o -type l -print 2> /dev/null | sed 1d | cut -b3-"
 
 export ERL_AFLAGS="-kernel shell_history enabled -kernel shell_history_file_bytes 1024000"
+
+export PATH="$HOME/.local/bin:$PATH"
 
 [ -f ~/.zsh_local ] && source ~/.zsh_local
 
