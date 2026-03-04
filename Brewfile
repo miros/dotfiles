@@ -12,3 +12,14 @@ brew "tmux"
 tap "thoughtbot/formulae" and brew "rcm"
 brew "asdf"
 brew "htop"
+brew "bat"
+brew "eza" # modern ls
+brew "git-delta"
+brew "glow" # markdown viewer
+brew "btop"
+brew "ripgrep"
+brew "jq"
+brew "lazygit"
+brew "fd"
+brew "ouch" # archiver\
+brew "pgcli"

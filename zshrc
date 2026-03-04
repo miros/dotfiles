@@ -58,6 +58,13 @@ alias pbpaste='xclip -selection clipboard -o'
 
 alias k='kubectl'
 
+alias curs="cursor"
+
+alias p="pnpm"
+
+alias cat='bat --paging=never'
+alias ls='eza --group-directories-first'
+
 PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
@@ -85,3 +92,5 @@ export PATH="$HOME/.local/bin:$PATH"
 [ -f ~/.zsh_local ] && source ~/.zsh_local
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+
