@@ -32,7 +32,7 @@
 [user]
 	name = miros
 	email = mirosm@mirosm.ru
-	signingkey = /Users/miroslavmalkin/.ssh/id_rsa_github.pub
+	signingkey = ~/.ssh/id_rsa_github.pub
 [pull]
 	rebase = true
 [url "git@github.com:"]

@@ -32,8 +32,8 @@ unsetopt auto_name_dirs
 export EDITOR=vim
 alias v="vim"
 
-export PAGER=less
-export LESS="-MQR"
+export PAGER=bat
+export LESS="--mouse --wheel-lines=3 -R -Q"
 
 alias gr='grep --color=auto'
 alias g='grep --color=auto'

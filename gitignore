@@ -13,4 +13,6 @@
 .lexical
 .claude
 .vscode/**
-.opencode
+.opencode§
+.zed
+**/.claude/settings.local.json

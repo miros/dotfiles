@@ -15,7 +15,6 @@ brew "htop"
 brew "bat"
 brew "eza" # modern ls
 brew "git-delta"
-brew "glow" # markdown viewer
 brew "btop"
 brew "ripgrep"
 brew "jq"
