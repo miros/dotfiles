@@ -21,5 +21,5 @@ brew "ripgrep"
 brew "jq"
 brew "lazygit"
 brew "fd"
-brew "ouch" # archiver\
+brew "ouch" # archiver
 brew "pgcli"

@@ -10,3 +10,7 @@
 .classpath
 .project
 .settings
+.lexical
+.claude
+.vscode/**
+.opencode

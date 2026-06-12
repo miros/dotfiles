@@ -52,18 +52,19 @@ alias notify_me='terminal-notifier -message "Task Done"'
 
 alias git-amend-f='git add . && git commit --amend --no-edit && git push --force-with-lease'
 alias git-rebase-main='git co main && git pull && git co - && git rebase main'
+alias git-rebase-master='git co master && git pull && git co - && git rebase master'
 
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 
 alias k='kubectl'
 
-alias curs="cursor"
-
 alias p="pnpm"
 
 alias cat='bat --paging=never'
 alias ls='eza --group-directories-first'
+
+alias be='bundle exec'
 
 PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
@@ -92,5 +93,3 @@ export PATH="$HOME/.local/bin:$PATH"
 [ -f ~/.zsh_local ] && source ~/.zsh_local
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-
