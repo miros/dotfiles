@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Usage: <self> <new-branch-name>
+name="${1:?usage: $(basename "$0") <new-branch-name>}"
+
+root="$(git rev-parse --show-toplevel)"
+project="$(basename "$root")"
+dir="$HOME/worktrees/$project/$name"
+
+git worktree add -b "$name" "$dir"
+
+cd "$dir"
+exec opencode
