@@ -10,5 +10,30 @@ dir="$HOME/worktrees/$project/$name"
 
 git worktree add -b "$name" "$dir"
 
+# copy gitignored .env files to new path
+rsync -a --prune-empty-dirs \
+  --include='*/' \
+  --exclude='.git/' \
+  --exclude='node_modules/' \
+  --exclude='.env.example' \
+  --include='.env' \
+  --include='.env.*' \
+  --exclude='*' \
+  "$root"/ "$dir"/
+
 cd "$dir"
+
+if [[ -f package.json ]]; then
+  if [[ -f pnpm-lock.yaml ]]; then
+    pnpm install
+  elif [[ -f yarn.lock ]]; then
+    yarn install
+  elif [[ -f bun.lock || -f bun.lockb ]]; then
+    bun install
+  else
+    npm install
+  fi
+fi
+
+printf '%s\n' "$dir"
 exec opencode
