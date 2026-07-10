@@ -17,3 +17,4 @@
 .zed
 **/.claude/settings.local.json
 .playwright-mcp
+.codegraph/
