@@ -1,6 +1,11 @@
 import type { Plugin } from "@opencode-ai/plugin"
 
+function isSubagentNotification(message: string): boolean {
+  return /\(@[^)]+ subagent\)$/.test(message)
+}
+
 export const DesktopNotifications: Plugin = async ({ $, client }) => {
+  const terminalProgram = process.env.TERM_PROGRAM
   let opencodeTty = ""
   try {
     const out = await $`tty`.text()
@@ -10,7 +15,31 @@ export const DesktopNotifications: Plugin = async ({ $, client }) => {
     opencodeTty = ""
   }
 
+  const ghosttyFocusedTerminalId = async (requireFrontmost: boolean): Promise<string> => {
+    const frontmostCheck = requireFrontmost ? '  if frontmost is false then return "no"\n' : ""
+    const script =
+      'if application "Ghostty" is not running then return "no"\n' +
+      'tell application "Ghostty"\n' +
+      frontmostCheck +
+      '  if (count of windows) is 0 then return "no"\n' +
+      '  return id of focused terminal of selected tab of front window\n' +
+      'end tell'
+    try {
+      const result = (await $`osascript -e ${script}`.text()).trim()
+      return result === "no" ? "" : result
+    } catch {
+      return ""
+    }
+  }
+
+  const ghosttyTerminalId = terminalProgram === "ghostty" ? await ghosttyFocusedTerminalId(false) : ""
+
   const isOpencodeVisible = async (): Promise<boolean> => {
+    if (terminalProgram === "ghostty") {
+      if (!ghosttyTerminalId) return false
+      return (await ghosttyFocusedTerminalId(true)) === ghosttyTerminalId
+    }
+
     if (!opencodeTty) return false
     const script =
       'if application "iTerm2" is not running then return "no"\n' +
@@ -35,6 +64,7 @@ export const DesktopNotifications: Plugin = async ({ $, client }) => {
     s.length > max ? s.slice(0, max - 1) + "…" : s
 
   const notify = async (message: string) => {
+    if (isSubagentNotification(message)) return
     if (await isOpencodeVisible()) return
     const body = truncate(message)
     await $`osascript -e ${`display notification "${body}" with title "Opencode"`}`
