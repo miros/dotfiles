@@ -9,7 +9,7 @@
     "playwright": {
       "type": "local",
       "command": ["npx", "-y", "@playwright/mcp@latest"],
-      "enabled": true
+      "enabled": false
     }
   },
   "permission": {
@@ -18,12 +18,18 @@
       "mp-*": "ask"
     }
   },
-  "plugin": ["opencode-goal-plugin"],
+  "plugin": [],
   "command": {
     "goal": {
       "description": "Set a session-scoped goal and auto-continue until complete.",
       "template": "$ARGUMENTS",
       "agent": "build"
     }
-  }
+  },
+  "plugin": [
+    ["@plannotator/opencode@latest", {
+      "workflow": "manual"
+    },
+    "opencode-goal-plugin"]
+  ]
 }

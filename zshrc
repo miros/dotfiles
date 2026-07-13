@@ -93,3 +93,6 @@ export PATH="$HOME/.local/bin:$PATH"
 [ -f ~/.zsh_local ] && source ~/.zsh_local
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Added by git-ai installer on Sun Jun 14 22:47:32 CEST 2026
+export PATH="/Users/miroslavmalkin/.git-ai/bin:$PATH"
