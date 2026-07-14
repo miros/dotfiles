@@ -1,0 +1,20 @@
+zshrc
+  s_4cf38eefabe748::t_4569e35a1fa651 15-29,31-45
+  s_4cf38eefabe748::t_b3ac0d438333ad 30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "6972e988904ec1fc5ae97a723fafa5633bcc61b5",
+  "prompts": {},
+  "sessions": {
+    "s_4cf38eefabe748": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_09f4de88bffe3H3jdiZ1CyzRZm",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
