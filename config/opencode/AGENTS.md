@@ -12,4 +12,5 @@
 - Try to avoid workarounds — do everything consistently.
 - After all changes, run the tests.
 - Suggest covering new code with tests.
+- If you encounter some failing tests that feel unrelated to your changes, stop, explain to the user and ask if we should ignore them or fix them.
 - After initial plan creation, when user asks questions, answer them. If answer imply some changes to plan, cleanly present the changes and ask for permission to change the plan.
