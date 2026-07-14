@@ -1,0 +1,29 @@
+zshrc
+  s_4cf38eefabe748::t_b67a54efc677ef 15
+config/opencode/AGENTS.md
+  s_6a5e32fe40287d::t_4fc21d65b05bdb 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "572c04ff78d20499dc36d29306bc8f66c4da946a",
+  "prompts": {},
+  "sessions": {
+    "s_4cf38eefabe748": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_09f4de88bffe3H3jdiZ1CyzRZm",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "miros <mirosm@mirosm.ru>"
+    },
+    "s_6a5e32fe40287d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0a0109ac7ffeUkR6I1MBJZYNeB",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
