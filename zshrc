@@ -12,7 +12,37 @@ local ret_status="%(?:%{$fg_bold[green]%}>:%{$fg_bold[red]%}>)"
 
 # %{$fg[red]%}%n%{$reset_color%}@%{$fg[green]%}%m%{$reset_color%}:
 
-PROMPT='%{$fg[white]%}%50<…<%~%<<%{$reset_color%}%25>…>$(git_prompt_info)%>>$(git_remote_status) ${ret_status}%{$reset_color%}'
+function prompt_path() {
+  local path
+  local segment
+  local result=""
+  local -a segments
+
+  if [[ "$PWD" == "$HOME" ]]; then
+    path="~"
+  elif [[ "$PWD" == "$HOME"/* ]]; then
+    path="~${PWD#$HOME}"
+  else
+    path="$PWD"
+  fi
+
+  segments=("${(@s:/:)path}")
+  [[ "$path" == /* ]] && result="/"
+  for segment in "${segments[@]}"; do
+    if [[ -n "$result" && "$result" != */ ]]; then
+      result+="/"
+    fi
+    if (( ${#segment} > 15 )); then
+      result+="${segment[1,15]}*"
+    else
+      result+="$segment"
+    fi
+  done
+
+  print -r -- "$result"
+}
+
+PROMPT='%{$fg[white]%}$(prompt_path)%{$reset_color%}%25>…>$(git_prompt_info)%>>$(git_remote_status) ${ret_status}%{$reset_color%}'
 
 ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[cyan]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
