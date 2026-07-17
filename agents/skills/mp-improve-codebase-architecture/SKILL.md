@@ -1,6 +1,6 @@
 ---
 name: mp-improve-codebase-architecture
-description: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
+description: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick. Never invoke automatically; invoke only when explicitly requested by the user.
 disable-model-invocation: true
 ---
 

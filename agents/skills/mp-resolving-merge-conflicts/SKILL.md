@@ -1,6 +1,7 @@
 ---
 name: mp-resolving-merge-conflicts
-description: "Use when you need to resolve an in-progress git merge/rebase conflict."
+description: "Resolve an in-progress git merge/rebase conflict. Never invoke automatically; invoke only when explicitly requested by the user."
+disable-model-invocation: true
 ---
 
 1. **See the current state** of the merge/rebase. Check git history, and the conflicting files.

@@ -1,6 +1,7 @@
 ---
 name: mp-tdd
-description: Test-driven development. Use when the user wants to build features or fix bugs test-first, mentions "red-green-refactor", or wants integration tests.
+description: Test-driven development. Never invoke automatically; invoke only when explicitly requested by the user.
+disable-model-invocation: true
 ---
 
 # Test-Driven Development
