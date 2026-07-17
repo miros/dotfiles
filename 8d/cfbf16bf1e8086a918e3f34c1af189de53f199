@@ -1,0 +1,33 @@
+agents/skills/mp-grill-with-docs/SKILL.md
+  s_24c80ff24c6ad8::t_88e5f01d0bbe48 3
+agents/skills/mp-grilling/SKILL.md
+  s_24c80ff24c6ad8::t_88e5f01d0bbe48 3-4
+agents/skills/mp-tdd/SKILL.md
+  s_24c80ff24c6ad8::t_88e5f01d0bbe48 3-4
+agents/skills/mp-improve-codebase-architecture/SKILL.md
+  s_24c80ff24c6ad8::t_88e5f01d0bbe48 3
+  s_24c80ff24c6ad8::t_2e38cde70d3ba9 66
+agents/skills/mp-resolving-merge-conflicts/SKILL.md
+  s_24c80ff24c6ad8::t_88e5f01d0bbe48 3-4
+agents/skills/mp-grill-me/SKILL.md
+  s_24c80ff24c6ad8::t_88e5f01d0bbe48 3
+agents/skills/mp-codebase-design/SKILL.md
+  s_24c80ff24c6ad8::t_88e5f01d0bbe48 3-4
+  s_24c80ff24c6ad8::t_2e38cde70d3ba9 115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "8dcfbf16bf1e8086a918e3f34c1af189de53f199",
+  "prompts": {},
+  "sessions": {
+    "s_24c80ff24c6ad8": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_090af04d1ffeJYOViqhDIloHC0",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
