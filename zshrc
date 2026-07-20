@@ -62,8 +62,9 @@ unsetopt auto_name_dirs
 export EDITOR=vim
 alias v="vim"
 
-export PAGER=bat
+export PAGER="bat -p"
 export LESS="--mouse --wheel-lines=3 -R -Q"
+export DELTA_PAGER="less -RF"
 
 alias gr='grep --color=auto'
 alias g='grep --color=auto'
@@ -84,9 +85,6 @@ alias git-amend-f='git add . && git commit --amend --no-edit && git push --force
 alias git-rebase-main='git co main && git pull && git co - && git rebase main'
 alias git-rebase-master='git co master && git pull && git co - && git rebase master'
 
-alias pbcopy='xclip -selection clipboard'
-alias pbpaste='xclip -selection clipboard -o'
-
 alias k='kubectl'
 
 alias p="pnpm"
@@ -99,17 +97,8 @@ alias be='bundle exec'
 PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
-# if [ -d $HOME/.rbenv ]; then
-#   export PATH=$HOME/.rbenv/bin:$PATH
-#   eval "$(rbenv init -)"
-# fi
-
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
-
-# if [ -d /usr/libexec/java_home ]; then
-#   export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
-# fi
 
 export FZF_CTRL_T_COMMAND="command find -L . \\( -path './\\.*' -o -fstype 'dev' -o -fstype 'proc' \\) -prune \
     -o -type f -print \
@@ -123,6 +112,3 @@ export PATH="$HOME/.local/bin:$PATH"
 [ -f ~/.zsh_local ] && source ~/.zsh_local
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# Added by git-ai installer on Sun Jun 14 22:47:32 CEST 2026
-export PATH="/Users/miroslavmalkin/.git-ai/bin:$PATH"

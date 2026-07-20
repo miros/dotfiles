@@ -49,6 +49,3 @@
 	defaultBranch = main
 [include]
     path = ~/.gitconfig_local
-[trace2]
-	eventTarget = af_unix:stream:/Users/miroslavmalkin/.git-ai/internal/daemon/trace2.sock
-	eventNesting = 0
