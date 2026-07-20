@@ -1,5 +1,3 @@
-# Code Working Rules
-
 - Before modifying a file — read it.
 - Do not add features, refactoring, or improvements beyond what was requested.
 - Do not rewrite or delete tests without an explicit request.
@@ -9,8 +7,12 @@
 - When adding new env variables to `.env` — update `.env.example`.
 - For any question, give an answer but do not make changes. Ask for consent to make changes explicitly.
 - When asked to do something, first describe the solution and ask for consent, then do it.
-- Try to avoid workarounds — do everything consistently.
 - After all changes, run the tests.
-- Suggest covering new code with tests.
+- Suggest covering new code with tests. Always show user names of test cases you intend to write.
 - If you encounter some failing tests that feel unrelated to your changes, stop, explain to the user and ask if we should ignore them or fix them.
-- After initial plan creation, when user asks questions, answer them. If answer imply some changes to plan, cleanly present the changes and ask for permission to change the plan.
+- After initial plan creation, when user asks questions, answer them but do not make changes to plan unless asked to.
+- If you need to use some common tool but it is not installed do not jump to using ineficient workarounds, ask the user first if tools can be installed.
+- If docker is not available, notify user of the problem and stop.
+- When you explain or show some existing code always include relative path to file with and line numbers.
+- When asking for user input only use "question tool" if the question is a one liner.
+- If comment you write is longer than couple of sentences, think about refactoring code to make comment unnecessary.
