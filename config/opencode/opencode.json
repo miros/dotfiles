@@ -18,7 +18,6 @@
       "mp-*": "ask"
     }
   },
-  "plugin": [],
   "command": {
     "goal": {
       "description": "Set a session-scoped goal and auto-continue until complete.",
@@ -29,7 +28,7 @@
   "plugin": [
     ["@plannotator/opencode@latest", {
       "workflow": "manual"
-    },
-    "opencode-goal-plugin"]
+    }],
+    "opencode-goal-plugin"
   ]
 }
