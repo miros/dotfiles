@@ -67,7 +67,7 @@ export const DesktopNotifications: Plugin = async ({ $, client }) => {
     if (isSubagentNotification(message)) return
     if (await isOpencodeVisible()) return
     const body = truncate(message)
-    await $`osascript -e ${`display notification "${body}" with title "Opencode"`}`
+    await $`osascript -e ${`display notification "${body}" with title "Opencode" sound name "Hero"`}`
   }
 
   const sessionTitle = async (sessionID: string): Promise<string> => {
