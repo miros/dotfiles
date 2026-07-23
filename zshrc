@@ -92,7 +92,7 @@ alias ls='eza --group-directories-first'
 
 alias be='bundle exec'
 
-alias fork-open-code='opencode -c --fork'
+alias fork-oc='opencode -c --fork'
 
 PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
