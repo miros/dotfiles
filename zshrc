@@ -82,8 +82,6 @@ alias docker_gc_images='docker images -q --filter "dangling=true" | xargs docker
 alias notify_me='terminal-notifier -message "Task Done"'
 
 alias git-amend-f='git add . && git commit --amend --no-edit && git push --force-with-lease'
-alias git-rebase-main='git co main && git pull && git co - && git rebase main'
-alias git-rebase-master='git co master && git pull && git co - && git rebase master'
 
 alias k='kubectl'
 
@@ -93,6 +91,8 @@ alias cat='bat --paging=never'
 alias ls='eza --group-directories-first'
 
 alias be='bundle exec'
+
+alias fork-open-code='opencode -c --fork'
 
 PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
@@ -108,6 +108,18 @@ export FZF_CTRL_T_COMMAND="command find -L . \\( -path './\\.*' -o -fstype 'dev'
 export ERL_AFLAGS="-kernel shell_history enabled -kernel shell_history_file_bytes 1024000"
 
 export PATH="$HOME/.local/bin:$PATH"
+
+git-rebase-main() {
+  git fetch origin || return
+
+  local branch
+  branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD) || {
+    echo "Cannot determine origin's default branch" >&2
+    return 1
+  }
+
+  git rebase "$branch"
+}
 
 [ -f ~/.zsh_local ] && source ~/.zsh_local
 
