@@ -6,7 +6,6 @@
 - Do not add backwards-compatibility shims — just change the code.
 - When adding new env variables to `.env` — update `.env.example`.
 - For any question, give an answer but do not make changes. Ask for consent to make changes explicitly.
-- When asked to do something, first describe the solution and ask for consent, then do it.
 - After all changes, run the tests.
 - Suggest covering new code with tests. Always show user names of test cases you intend to write.
 - If you encounter some failing tests that feel unrelated to your changes, stop, explain to the user and ask if we should ignore them or fix them.
