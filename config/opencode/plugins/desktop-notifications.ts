@@ -89,9 +89,13 @@ export const DesktopNotifications: Plugin = async ({ $, client }) => {
         await notify(title ? `Finished: ${title}` : "Request finished")
       }
 
-      if (event.type === "permission.updated") {
-        const title = event.properties.title
-        await notify(title ? `Attention: ${title}` : "Attention required")
+      if (event.type === "permission.asked") {
+        await notify(`Attention: ${event.properties.permission}`)
+      }
+
+      if (event.type === "question.asked") {
+        const q = event.properties.questions[0]
+        await notify(q ? `Question: ${q.question}` : "Question needs input")
       }
 
       if (event.type === "session.error") {
