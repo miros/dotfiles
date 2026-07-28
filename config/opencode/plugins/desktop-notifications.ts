@@ -32,10 +32,11 @@ export const DesktopNotifications: Plugin = async ({ $, client }) => {
     }
   }
 
-  const ghosttyTerminalId = terminalProgram === "ghostty" ? await ghosttyFocusedTerminalId(false) : ""
+  const ghosttyTerminalIds = new Map<string, string>()
 
-  const isOpencodeVisible = async (): Promise<boolean> => {
+  const isOpencodeVisible = async (sessionID?: string): Promise<boolean> => {
     if (terminalProgram === "ghostty") {
+      const ghosttyTerminalId = sessionID ? ghosttyTerminalIds.get(sessionID) : undefined
       if (!ghosttyTerminalId) return false
       return (await ghosttyFocusedTerminalId(true)) === ghosttyTerminalId
     }
@@ -63,9 +64,9 @@ export const DesktopNotifications: Plugin = async ({ $, client }) => {
   const truncate = (s: string, max = 200): string =>
     s.length > max ? s.slice(0, max - 1) + "…" : s
 
-  const notify = async (message: string) => {
+  const notify = async (message: string, sessionID?: string) => {
     if (isSubagentNotification(message)) return
-    if (await isOpencodeVisible()) return
+    if (await isOpencodeVisible(sessionID)) return
     const body = truncate(message)
     await $`osascript -e ${`display notification "${body}" with title "Opencode" sound name "Hero"`}`
   }
@@ -86,21 +87,26 @@ export const DesktopNotifications: Plugin = async ({ $, client }) => {
     event: async ({ event }) => {
       if (event.type === "session.idle") {
         const title = await sessionTitle(event.properties.sessionID)
-        await notify(title ? `Finished: ${title}` : "Request finished")
+        await notify(title ? `Finished: ${title}` : "Request finished", event.properties.sessionID)
       }
 
       if (event.type === "permission.asked") {
-        await notify(`Attention: ${event.properties.permission}`)
+        await notify(`Attention: ${event.properties.permission}`, event.properties.sessionID)
       }
 
       if (event.type === "question.asked") {
         const q = event.properties.questions[0]
-        await notify(q ? `Question: ${q.question}` : "Question needs input")
+        await notify(q ? `Question: ${q.question}` : "Question needs input", event.properties.sessionID)
       }
 
       if (event.type === "session.error") {
-        await notify(errorMessage(event))
+        await notify(errorMessage(event), event.properties.sessionID)
       }
+    },
+    "chat.message": async ({ sessionID }) => {
+      if (terminalProgram !== "ghostty") return
+      const terminalID = await ghosttyFocusedTerminalId(true)
+      if (terminalID) ghosttyTerminalIds.set(sessionID, terminalID)
     },
   }
 }
