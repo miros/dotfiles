@@ -1,0 +1,20 @@
+config/opencode/plugins/desktop-notifications.ts
+  s_e9e2c1645f7fbe::t_210f70330afa25 35,37,39,67,69,90,94,99,103,106-109
+  s_e9e2c1645f7fbe::t_6d4334fe09d438 110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "88b4339cc1047d0a390a2ae0a4aee83070f7b18a",
+  "prompts": {},
+  "sessions": {
+    "s_e9e2c1645f7fbe": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0581f17c9ffeJoJ0NSRL62p7Hy",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
