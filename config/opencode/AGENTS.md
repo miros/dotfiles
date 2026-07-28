@@ -5,13 +5,11 @@
 - Do not add tombstone comments explaining why some code was deleted.
 - Do not add backwards-compatibility shims — just change the code.
 - When adding new env variables to `.env` — update `.env.example`.
-- For any question, give an answer but do not make changes. Ask for consent to make changes explicitly.
+- For any question (not an explicit command), give an answer but do not make changes. Ask for consent to make changes explicitly.
 - After all changes, run the tests.
 - Suggest covering new code with tests. Always show user names of test cases you intend to write.
 - If you encounter some failing tests that feel unrelated to your changes, stop, explain to the user and ask if we should ignore them or fix them.
-- After initial plan creation, when user asks questions, answer them but do not make changes to plan unless asked to.
 - If you need to use some common tool but it is not installed do not jump to using ineficient workarounds, ask the user first if tools can be installed.
-- If docker is not available, notify user of the problem and stop.
-- When you explain or show some existing code always include relative path to file with and line numbers.
-- When asking for user input only use "question tool" if the question is a one liner.
+- If running your current task requires Docker and it is not available, notify user of the problem and stop.
+- When you explain or show some existing code always include relative path to file with line numbers.
 - If comment you write is longer than couple of sentences, think about refactoring code to make comment unnecessary.
