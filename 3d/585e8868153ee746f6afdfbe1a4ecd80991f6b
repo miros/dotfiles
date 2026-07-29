@@ -1,0 +1,29 @@
+zshrc
+  s_0662b7edcf45bc::t_43a15cba6f1c22 13
+gitconfig
+  s_5dfa62849b5e25::t_17ba09db5e8fe8 52-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "3d585e8868153ee746f6afdfbe1a4ecd80991f6b",
+  "prompts": {},
+  "sessions": {
+    "s_0662b7edcf45bc": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_05185588bffe5TBVLV0mUkpM1n",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "miros <mirosm@mirosm.ru>"
+    },
+    "s_5dfa62849b5e25": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_058253660ffeWJJoPP5HQH4oew",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
