@@ -60,7 +60,12 @@ alias ls='eza --group-directories-first'
 
 alias be='bundle exec'
 
-alias fork-oc='opencode -c --fork'
+alias oc-fork='opencode -c --fork'
+
+oc-plan() {
+  OPENCODE_CONFIG_CONTENT='{"plugin":[["@plannotator/opencode@latest",{"workflow":"plan-agent"}]]}' \
+    command opencode "$@"
+}
 
 PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
