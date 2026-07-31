@@ -10,7 +10,7 @@ source $ZSH/oh-my-zsh.sh
 
 local ret_status="%(?:%{$fg_bold[green]%}>:%{$fg_bold[red]%}>)"
 
-PROMPT='%{$fg[white]%}%1~%{$reset_color%}%25>…>$(git_prompt_info)%>>$(git_remote_status) ${ret_status}%{$reset_color%}'
+PROMPT='%{$fg[white]%}%33>...>%1~%>>%{$reset_color%}%25>…>$(git_prompt_info)%>>$(git_remote_status) ${ret_status}%{$reset_color%}'
 
 ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[cyan]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
@@ -92,6 +92,26 @@ git-rebase-main() {
   }
 
   git rebase "$branch"
+}
+
+git-cd() {
+  local branch="$1"
+  if [[ -z "$branch" ]]; then
+    echo "Usage: git-cd <branch>" >&2
+    return 1
+  fi
+
+  local wt_path
+  wt_path=$(git worktree list --porcelain | awk -v branch="refs/heads/$branch" '
+    /^worktree / { wt = substr($0, 10) }
+    $1 == "branch" && $2 == branch { print wt; exit }
+  ')
+
+  if [[ -n "$wt_path" ]]; then
+    cd "$wt_path"
+  else
+    git checkout "$branch"
+  fi
 }
 
 [ -f ~/.zsh_local ] && source ~/.zsh_local
