@@ -1,0 +1,21 @@
+zshrc
+  s_ec4ae78bd82e32::t_8717e37cda1396 92-98,101-104,107-111
+  s_ec4ae78bd82e32::t_42a3751eafda6e 99-100,105-106
+  s_ec4ae78bd82e32::t_0fe79b607185eb 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "3d2a878fb3aac724f6f125041643541a4196ff19",
+  "prompts": {},
+  "sessions": {
+    "s_ec4ae78bd82e32": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_04d668357ffeJ3srolorTIRHhy",
+        "model": "kimi-k3"
+      },
+      "human_author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
