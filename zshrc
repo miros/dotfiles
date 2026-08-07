@@ -97,8 +97,21 @@ git-rebase-main() {
 git-cd() {
   local branch="$1"
   if [[ -z "$branch" ]]; then
-    echo "Usage: git-cd <branch>" >&2
-    return 1
+    local worktrees line head commit_time
+    worktrees=$(git worktree list --porcelain) || return
+
+    while IFS= read -r line; do
+      if [[ "$line" == HEAD\ * ]]; then
+        head="${line#HEAD }"
+      elif [[ "$line" == branch\ refs/heads/* ]]; then
+        branch="${line#branch refs/heads/}"
+      elif [[ -z "$line" && -n "$branch" ]]; then
+        commit_time=$(git show -s --format=%ct "$head" 2>/dev/null) || commit_time=0
+        printf '%s\t%s\n' "$commit_time" "$branch"
+        branch=
+      fi
+    done <<< "$worktrees"$'\n' | sort -t $'\t' -k1,1nr -s | cut -f2-
+    return
   fi
 
   local wt_path
