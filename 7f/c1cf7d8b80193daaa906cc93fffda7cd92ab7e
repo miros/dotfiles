@@ -1,0 +1,20 @@
+zshrc
+  s_8bd5d62948be29::t_03ed99726ad847 100-101,104-113
+  s_8bd5d62948be29::t_4ee66a9e70eedc 102-103,114
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "7fc1cf7d8b80193daaa906cc93fffda7cd92ab7e",
+  "prompts": {},
+  "sessions": {
+    "s_8bd5d62948be29": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_02409126fffeqHxPTbBJRHWjYE",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
