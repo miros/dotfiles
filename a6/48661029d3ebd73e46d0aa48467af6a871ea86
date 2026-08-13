@@ -1,0 +1,14 @@
+agents/skills/show-me/SKILL.md
+  h_312676f1751749 1-125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "a648661029d3ebd73e46d0aa48467af6a871ea86",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
