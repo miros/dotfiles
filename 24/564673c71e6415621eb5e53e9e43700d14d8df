@@ -1,0 +1,64 @@
+agents/skills/mp-improve-codebase-architecture/SKILL.md
+  s_f67538ad3e49b2::t_444f756a93167b 9,13,20-24,27,30,39,41,45-50,54,56,64,66,70-71
+agents/skills/mp-grill-with-docs/SKILL.md
+  s_f67538ad3e49b2::t_444f756a93167b 3,7
+agents/skills/mp-domain-modeling/ADR-FORMAT.md
+  s_f67538ad3e49b2::t_8f02864358f2d7 1-47
+agents/skills/mp-improve-codebase-architecture/HTML-REPORT.md
+  s_f67538ad3e49b2::t_444f756a93167b 3,12,38,46-53,59,80,88,99-100,108,116,121,123
+agents/skills/mp-domain-modeling/CONTEXT-FORMAT.md
+  s_f67538ad3e49b2::t_8f02864358f2d7 1-60
+agents/skills/mp-grill-me/SKILL.md
+  s_f67538ad3e49b2::t_65a6579d202447 7
+agents/skills/mp-code-review/SKILL.md
+  s_f67538ad3e49b2::t_81e756acc01eda 3
+  s_f67538ad3e49b2::t_510fd5aabedf9b 1-2
+  s_f67538ad3e49b2::t_c947422f4dc21d 4-6
+agents/skills/mp-codebase-design/DEEPENING.md
+  s_f67538ad3e49b2::t_444f756a93167b 3,11,30,34,37
+agents/skills/mp-domain-modeling/SKILL.md
+  s_f67538ad3e49b2::t_8f02864358f2d7 1-74
+agents/skills/mp-writing-for-agents/SKILL.md
+  s_f67538ad3e49b2::t_444f756a93167b 3
+  s_f67538ad3e49b2::t_301bae455b8315 1-2,4-81
+agents/skills/mp-tdd/SKILL.md
+  s_f67538ad3e49b2::t_444f756a93167b 3,8,10,12,14,18,20,22,24,26,28,30-32,34,36-38
+agents/skills/mp-grilling/SKILL.md
+  s_f67538ad3e49b2::t_65a6579d202447 3,6,8,10-28
+agents/skills/mp-retro/SKILL.md
+  s_f67538ad3e49b2::t_19d0e01a516a37 3
+  s_f67538ad3e49b2::t_e8c46a65025979 1-2
+  s_f67538ad3e49b2::t_9b83cd7a8e9250 4-6
+agents/skills/mp-codebase-design/SKILL.md
+  s_f67538ad3e49b2::t_444f756a93167b 3,12,14,16,18,20,22,24,26,28,62,108,113-114
+agents/skills/mp-codebase-design/DESIGN-IT-TWICE.md
+  s_f67538ad3e49b2::t_444f756a93167b 3,5,15,21,25-27,34,38,44
+agents/skills/mp-writing-for-agents/SKILL-MECHANICS.md
+  s_f67538ad3e49b2::t_79003c33711d6b 1-22
+config/opencode/AGENTS.md
+  s_b128f155f4bd1f::t_f2eebd32aac705 1-2,10-14,20-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "24564673c71e6415621eb5e53e9e43700d14d8df",
+  "prompts": {},
+  "sessions": {
+    "s_b128f155f4bd1f": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fb7cf8c84ffe9fGcbwHzXlge48",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "miros <mirosm@mirosm.ru>"
+    },
+    "s_f67538ad3e49b2": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f9462c16fffenYIgTuz5ovGPfp",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
