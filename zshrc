@@ -10,11 +10,12 @@ source $ZSH/oh-my-zsh.sh
 
 local ret_status="%(?:%{$fg_bold[green]%}>:%{$fg_bold[red]%}>)"
 
-PROMPT='%{$fg[white]%}%33>...>%1~%>>%{$reset_color%}%25>…>$(git_prompt_info)%>>$(git_remote_status) ${ret_status}%{$reset_color%}'
+PROMPT='%{$fg[white]%}%33>...>%1~%>>%{$reset_color%}$(git_prompt_info)$(git_remote_status) ${ret_status}%{$reset_color%}'
 
-ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[cyan]%}"
+ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[cyan]%}%25>…>"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg_bold[red]%}*"
+ZSH_THEME_GIT_PROMPT_CLEAN="%>>"
+ZSH_THEME_GIT_PROMPT_DIRTY="%>> %{$fg_bold[red]%}*"
 
 ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE=" %{$fg[yellow]%}B%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE=" %{$fg[yellow]%}A%{$reset_color%}"
@@ -97,10 +98,15 @@ git-rebase-main() {
 git-cd() {
   local branch="$1"
   if [[ -z "$branch" ]]; then
-    local worktrees line head commit_time
+    if ! command -v fzf >/dev/null 2>&1; then
+      echo "git-cd requires fzf for interactive branch selection" >&2
+      return 1
+    fi
+
+    local worktrees worktree_branches line head commit_time
     worktrees=$(git worktree list --porcelain) || return
 
-    while IFS= read -r line; do
+    worktree_branches=$(while IFS= read -r line; do
       if [[ "$line" == HEAD\ * ]]; then
         head="${line#HEAD }"
       elif [[ "$line" == branch\ refs/heads/* ]]; then
@@ -110,8 +116,9 @@ git-cd() {
         printf '%s\t%s\n' "$commit_time" "$branch"
         branch=
       fi
-    done <<< "$worktrees"$'\n' | sort -t $'\t' -k1,1nr -s | cut -f2-
-    return
+    done <<< "$worktrees"$'\n' | sort -t $'\t' -k1,1nr -s | cut -f2-)
+
+    branch=$(printf '%s\n' "$worktree_branches" | fzf) || return
   fi
 
   local wt_path
@@ -133,3 +140,6 @@ git-cd() {
 
 # Added by git-ai installer on Sun Aug 23 09:43:43 CEST 2026
 export PATH="/Users/miroslavmalkin/.git-ai/bin:$PATH"
+
+# opencode
+export PATH=/Users/miroslavmalkin/.opencode/bin:$PATH

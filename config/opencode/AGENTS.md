@@ -1,5 +1,6 @@
 # Rules for working with code
 
+- Be brief and concise. Avoid unnecessary words.
 - Before modifying a file — read it.
 - Do not add features, refactoring, or improvements beyond what was requested.
 - Do not rewrite or delete tests without an explicit request.
@@ -17,8 +18,8 @@
 - If running your current task requires Docker and it is not available, notify user of the problem and stop.
 - When you explain or show some existing code always include relative path to file with line numbers.
 - If comment you write is longer than couple of sentences, think about refactoring code to make comment unnecessary.
-- If you produce a mermaid diagram do not just output its source code, render it in tmp folder and provide a link to it in your answer.
 - For any substantial work create TODO/Task list and follow it step by step. Pertain TODO on compaction. Do not replace global TODO when doing a single task from it with the task-scoped entries.
+- Whan you are asked to post github comments on user's behalf, state clearly that you are an AI agent and name what model are you using.
 
 # Engineering Writing
 

@@ -2,6 +2,8 @@
 name: mp-retro
 description: "Conduct a retrospective on a coding session. Never invoke automatically; invoke only when explicitly requested by the user."
 disable-model-invocation: true
+metadata:
+  opencode/autoinvoke: false
 ---
 
 The user has asked for a **retrospective**. You are suggesting improvements to the coding agent's **environment** to improve future runs.
