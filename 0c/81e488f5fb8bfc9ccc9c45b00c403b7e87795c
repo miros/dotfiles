@@ -1,0 +1,40 @@
+agents/skills/mp-code-review/SKILL.md
+  h_312676f1751749 4-5
+agents/skills/mp-codebase-design/SKILL.md
+  h_312676f1751749 4-5
+agents/skills/mp-domain-modeling/SKILL.md
+  h_312676f1751749 4-5
+agents/skills/mp-grill-me/SKILL.md
+  h_312676f1751749 5-6
+agents/skills/mp-grill-with-docs/SKILL.md
+  h_312676f1751749 5-6
+agents/skills/mp-grilling/SKILL.md
+  h_312676f1751749 4-5
+agents/skills/mp-improve-codebase-architecture/SKILL.md
+  h_312676f1751749 5-6
+agents/skills/mp-retro/SKILL.md
+  h_312676f1751749 5-6
+agents/skills/mp-tdd/SKILL.md
+  h_312676f1751749 4-5
+agents/skills/mp-writing-for-agents/SKILL.md
+  h_312676f1751749 4-5
+config/opencode/AGENTS.md
+  h_312676f1751749 3,22
+oh-my-zsh/custom/plugins/pj/pj.plugin.zsh
+  h_312676f1751749 1-59
+tests/pj.test.zsh
+  h_312676f1751749 1-72
+zshrc
+  h_312676f1751749 13,15,17-18,101-106,109,119-121,143-145
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0c81e488f5fb8bfc9ccc9c45b00c403b7e87795c",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
