@@ -15,6 +15,6 @@ Rebase the current Git branch onto the latest default branch of its tracking rem
 - Continue until the rebase completes.
 - Run relevant checks only if conflicts were resolved.
 - If the rebase completes without conflicts, do not run tests or other checks.
-- Invoke `show-me` only when conflict resolution required choosing between incompatible business or code-structure intentions.
+- Invoke `show-me` only when conflict resolution required choosing between incompatible business intentions or code designs.
 - Summarize only those choices.
 - Do not invoke `show-me` when all conflicts were resolved mechanically, including by keeping both changes.
