@@ -1,0 +1,16 @@
+agents/skills/show-me/SKILL.md
+  h_312676f1751749 4-6,126-128
+config/opencode/opencode.json
+  h_312676f1751749 17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "25d74b7099d7b8934d0fac09ea75ad2333bfa110",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
