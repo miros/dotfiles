@@ -19,7 +19,7 @@
 - When you explain or show some existing code always include relative path to file with line numbers.
 - If comment you write is longer than couple of sentences, think about refactoring code to make comment unnecessary.
 - For any substantial work create TODO/Task list and follow it step by step. Pertain TODO on compaction. Do not replace global TODO when doing a single task from it with the task-scoped entries.
-- Whan you are asked to post github comments on user's behalf, state clearly that you are an AI agent and name what model are you using.
+- Whan you are asked to post github comments on user's behalf, start the post by stating that your are AI agent and name what model are you using. Example: "AI agent here. I am MODE_NAME_AND_VERSION."
 
 # Engineering Writing
 
