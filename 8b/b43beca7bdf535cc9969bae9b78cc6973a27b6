@@ -1,0 +1,16 @@
+config/opencode/AGENTS.md
+  h_312676f1751749 22
+config/opencode/commands/check-copilot-review.md
+  h_312676f1751749 1-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8bb43beca7bdf535cc9969bae9b78cc6973a27b6",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
