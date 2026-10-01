@@ -14,8 +14,7 @@
   },
   "permission": {
     "skill": {
-      "*": "allow",
-      "mp-*": "ask"
+      "*": "allow"
     }
   },
   "command": {
