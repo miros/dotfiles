@@ -1,0 +1,16 @@
+config/opencode/cli.json
+  h_312676f1751749 1-40
+config/opencode/tui.json
+  h_312676f1751749 1-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "64b9b45b5b3043fe0204d492ee789061bb9df9eb",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
