@@ -17,17 +17,9 @@
       "*": "allow"
     }
   },
-  "command": {
-    "goal": {
-      "description": "Set a session-scoped goal and auto-continue until complete.",
-      "template": "$ARGUMENTS",
-      "agent": "build"
-    }
-  },
   "plugin": [
     ["@plannotator/opencode@latest", {
       "workflow": "manual"
-    }],
-    "opencode-goal-plugin"
+    }]
   ]
 }
