@@ -1,0 +1,14 @@
+config/opencode/commands/code-review.md
+  h_312676f1751749 1-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "bb283dcb95f81096a8c05a5256874b0799804029",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
