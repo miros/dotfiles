@@ -1,0 +1,14 @@
+config/opencode/AGENTS.md
+  h_312676f1751749 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "093c09b83c7bedc81591c03059f18e7d16ec037d",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
