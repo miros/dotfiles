@@ -1,0 +1,16 @@
+config/opencode/commands/code-review.md
+  h_312676f1751749 1-22
+config/opencode/commands/rebase-main.md
+  h_312676f1751749 18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "bb5c761300a17e9aed4d4fb5e2ca751451199279",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
