@@ -1,0 +1,30 @@
+agents/skills/adhd/SKILL.md
+  h_312676f1751749 1-134
+config/opencode/cli.json
+  h_312676f1751749 33
+config/opencode/commands/code-review.md
+  h_312676f1751749 5-6
+config/opencode/commands/humanize.md
+  h_312676f1751749 6-11
+config/opencode/plugins/open-ghostty-tab/index.ts
+  h_312676f1751749 1-6
+config/opencode/plugins/open-ghostty-tab/tui.ts
+  h_312676f1751749 1-55
+config/opencode/plugins/zed/index.ts
+  h_312676f1751749 1-6
+config/opencode/plugins/zed/tui.ts
+  h_312676f1751749 1-52
+zshrc
+  h_312676f1751749 64,66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1a762b6ad6f505e82c7d5e16b0624d45531cf4a0",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
