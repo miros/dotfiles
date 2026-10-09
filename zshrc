@@ -72,6 +72,12 @@ oc-plan() {
     command opencode "$@"
 }
 
+new-wt() {
+  local dir
+  dir="$("$HOME/.dotfiles/bin/new-wt" "$@")" || return
+  cd -- "$dir"
+}
+
 PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 

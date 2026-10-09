@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  printf 'usage: %s <branch-name> [--skip-deps]\n' "$(basename "$0")" >&2
+  exit 1
+}
+
+local_branch_exists() {
+  git show-ref --verify --quiet "refs/heads/$name"
+}
+
+find_remote_branch() {
+  local remote_branch="" remote
+  while IFS= read -r remote; do
+    if ! git show-ref --verify --quiet "refs/remotes/$remote/$name"; then
+      continue
+    fi
+
+    if [[ -n "$remote_branch" ]]; then
+      printf 'Branch %s exists on multiple remotes: %s, %s\n' "$name" "$remote_branch" "$remote/$name" >&2
+      exit 1
+    fi
+    remote_branch="$remote/$name"
+  done < <(git remote)
+
+  printf '%s\n' "$remote_branch"
+}
+
+create_worktree() {
+  git fetch --all
+
+  if local_branch_exists; then
+    git worktree add "$dir" "$name"
+    return
+  fi
+
+  local remote_branch
+  remote_branch="$(find_remote_branch)"
+
+  if [[ -n "$remote_branch" ]]; then
+    git worktree add --track -b "$name" "$dir" "$remote_branch"
+    return
+  fi
+
+  git worktree add -b "$name" "$dir"
+}
+
+copy_env_files() {
+  rsync -a --prune-empty-dirs \
+    --include='*/' \
+    --exclude='.git/' \
+    --exclude='node_modules/' \
+    --exclude='.env.example' \
+    --include='.env' \
+    --include='.env.*' \
+    --exclude='*' \
+    "$root"/ "$dir"/
+}
+
+install_deps() {
+  if [[ "$skip_deps" == false && -f package.json ]]; then
+    if [[ -f pnpm-lock.yaml ]]; then
+      pnpm install
+    elif [[ -f yarn.lock ]]; then
+      yarn install
+    elif [[ -f bun.lock || -f bun.lockb ]]; then
+      bun install
+    else
+      npm install
+    fi
+  fi
+}
+
+name="${1:-}"
+option="${2:-}"
+
+if [[ -z "$name" || "$name" == -* || $# -gt 2 ]]; then
+  usage
+fi
+
+skip_deps=false
+if [[ "$option" == --skip-deps ]]; then
+  skip_deps=true
+elif [[ $# -eq 2 ]]; then
+  usage
+fi
+
+root="$(git rev-parse --show-toplevel)"
+project="$(basename "$root")"
+dir="$HOME/pjs/worktrees/$project/$name"
+
+{
+  create_worktree
+  copy_env_files
+  cd "$dir"
+  install_deps
+} >&2
+
+printf '%s\n' "$dir"

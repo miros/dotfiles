@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, renameSync, rmSync, symlinkSync } from "node:fs"
+import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, symlinkSync } from "node:fs"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import { $ } from "bun"
@@ -19,11 +19,8 @@ function link(target: string, linkPath: string) {
     return
   }
 
-  if (stat?.isSymbolicLink()) {
-    rmSync(linkPath)
-  } else if (stat) {
-    renameSync(linkPath, `${linkPath}.bak`)
-    console.log(`backed up ${linkPath}`)
+  if (stat) {
+    throw new Error(`Destination already exists: ${linkPath}`)
   }
 
   symlinkSync(target, linkPath)
