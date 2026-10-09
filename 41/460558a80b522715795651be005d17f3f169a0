@@ -1,0 +1,64 @@
+.gitignore
+  h_312676f1751749 1
+config/opencode/cli.json
+  h_312676f1751749 19
+config/opencode/opencode.json
+  h_312676f1751749 13-33,41-45,49,51
+config/opencode/plugins/cmon/backfill.js
+  h_312676f1751749 1-130
+config/opencode/plugins/cmon/bun.lock
+  h_312676f1751749 1-592
+config/opencode/plugins/cmon/index.js
+  h_312676f1751749 1-135
+config/opencode/plugins/cmon/money.js
+  h_312676f1751749 1-10
+config/opencode/plugins/cmon/package.json
+  h_312676f1751749 1-6
+config/opencode/plugins/cmon/pricing.js
+  h_312676f1751749 1-170
+config/opencode/plugins/cmon/recorder.js
+  h_312676f1751749 1-135
+config/opencode/plugins/cmon/rpc.js
+  h_312676f1751749 1-69
+config/opencode/plugins/cmon/store.js
+  h_312676f1751749 1-253
+config/opencode/plugins/cmon/summary.js
+  h_312676f1751749 1-52
+config/opencode/plugins/cmon/time.js
+  h_312676f1751749 1-14
+config/opencode/plugins/cmon/tui.js
+  h_312676f1751749 1-326
+config/opencode/plugins/cmon/types.js
+  h_312676f1751749 1-5
+config/opencode/plugins/opencode-todo/bun.lock
+  h_312676f1751749 1-833
+config/opencode/plugins/opencode-todo/housekeeping.js
+  h_312676f1751749 1-67
+config/opencode/plugins/opencode-todo/index.js
+  h_312676f1751749 1-143
+config/opencode/plugins/opencode-todo/metadata.js
+  h_312676f1751749 1-22
+config/opencode/plugins/opencode-todo/package.json
+  h_312676f1751749 1-9
+config/opencode/plugins/opencode-todo/rpc.js
+  h_312676f1751749 1-63
+config/opencode/plugins/opencode-todo/store.js
+  h_312676f1751749 1-240
+config/opencode/plugins/opencode-todo/tools.js
+  h_312676f1751749 1-121
+config/opencode/plugins/opencode-todo/tui.js
+  h_312676f1751749 1-278
+config/opencode/plugins/opencode-todo/types.js
+  h_312676f1751749 1-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "41460558a80b522715795651be005d17f3f169a0",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
