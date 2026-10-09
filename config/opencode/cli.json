@@ -16,7 +16,7 @@
     "indicators": "status"
   },
   "session": {
-    "sidebar": "hide",
+    "sidebar": "auto",
     "scrollbar": false,
     "thinking": "show"
   },
@@ -29,8 +29,7 @@
       "question": "/System/Library/Sounds/Hero.aiff",
       "permission": "/System/Library/Sounds/Hero.aiff",
       "error": "/System/Library/Sounds/Hero.aiff",
-      "done": "/System/Library/Sounds/Hero.aiff",
-      "subagent_done": "/Users/miroslavmalkin/.dotfiles/config/opencode/sounds/silence.wav"
+      "done": "/System/Library/Sounds/Hero.aiff"
     }
   },
   "animations": true,

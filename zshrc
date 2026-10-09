@@ -61,6 +61,8 @@ alias ls='eza --group-directories-first'
 
 alias be='bundle exec'
 
+export OPENCODE_CLI_CONFIG_CONTENT="{\"attention\":{\"sounds\":{\"subagent_done\":\"$HOME/.dotfiles/config/opencode/sounds/silence.wav\"}}}"
+
 alias oc='opencode'
 alias oc-fork='opencode -c --fork'
 alias ai-costs-today='npx -y codeburn@latest audit -p today --provider opencode'
