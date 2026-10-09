@@ -61,7 +61,9 @@ alias ls='eza --group-directories-first'
 
 alias be='bundle exec'
 
+alias oc='opencode'
 alias oc-fork='opencode -c --fork'
+alias ai-costs-today='npx -y codeburn@latest audit -p today --provider opencode'
 
 oc-plan() {
   OPENCODE_CONFIG_CONTENT='{"plugin":[["@plannotator/opencode@latest",{"workflow":"plan-agent"}]]}' \

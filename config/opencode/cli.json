@@ -30,7 +30,7 @@
       "permission": "/System/Library/Sounds/Hero.aiff",
       "error": "/System/Library/Sounds/Hero.aiff",
       "done": "/System/Library/Sounds/Hero.aiff",
-      "subagent_done": "/System/Library/Sounds/Hero.aiff"
+      "subagent_done": "/Users/miroslavmalkin/.dotfiles/config/opencode/sounds/silence.wav"
     }
   },
   "animations": true,

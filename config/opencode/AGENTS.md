@@ -1,9 +1,7 @@
 # Rules for working with code
 
 - Be brief and concise. Avoid unnecessary words.
-- Before modifying a file — read it.
 - Do not add features, refactoring, or improvements beyond what was requested.
-- Do not rewrite or delete tests without an explicit request.
 - Do not add comments or docstrings to code that hasn't been changed.
 - Do not add tombstone comments explaining why some code was deleted.
 - When adding new env variables to `.env` — update `.env.example`.

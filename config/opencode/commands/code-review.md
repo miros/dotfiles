@@ -2,7 +2,8 @@
 description: Review code for correctness, security, design, and tests
 ---
 
-Perform a code review.
+Perform a code review by inspecting code only.
+Do not run tests.
 
 Focus on:
 
