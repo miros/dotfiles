@@ -2,13 +2,12 @@
 description: Rewrite an implementation plan for a human reader
 ---
 
-What we have now feel like an implementation plan for an agent.
+Last message felt like an implementation plan for an agent.
 Provide me a "plan for a human": briefly explain what and how are you going to do like a junior engineer would explain to his teachlead.
-Provide explicit list of test cases per file you plan to add
+Provide explicit list of test cases per file you plan to add.
 Give estimate for the size of the change in lines of code (LOC) and the number of files affected.
 Keep the response concise and dense.
 Keep the plan under 400 words unless distinct test cases require more space.
-
 
 Apply these technical writing instructions to your response:
 

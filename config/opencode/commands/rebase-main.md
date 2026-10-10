@@ -4,17 +4,20 @@ agent: build
 subagent: false
 ---
 
-Rebase the current Git branch onto the latest default branch of its tracking remote.
+Rebase the current Git branch using the helper script. Resume an existing rebase.
 
-- Ensure the working tree is clean.
-- Determine the tracking remote. Fall back to `origin` when unambiguous.
-- Fetch the remote and detect its default branch.
-- Rebase the current branch onto the fetched default branch.
-- Resolve conflicts while preserving the intent of both sides.
-- Ask the user only when the correct resolution cannot be inferred safely.
-- Continue until the rebase completes.
-- Run relevant checks only if conflicts were resolved.
-- If the rebase completes without conflicts, do not run tests or other checks.
-- Invoke `show-me` only when conflict resolution required choosing between incompatible business intentions or code designs.
-- Summarize only those choices.
-- Do not invoke `show-me` when all conflicts were resolved mechanically, including by keeping both changes.
+1. Run `bash "$HOME/.dotfiles/bin/rebase-main" start`.
+2. Follow the reported status:
+   - `completed`: finish with steps 7–9. Do not run checks if no conflicts occurred.
+   - `error`: report the failure and stop. Do not retry with different Git options.
+   - `conflicts`: resolve the listed files while preserving the intent of both sides.
+3. Ask the user when the correct resolution cannot be inferred safely.
+4. Stage only files you resolved. Do not use `git add .` or `git add -A`.
+5. Run `bash "$HOME/.dotfiles/bin/rebase-main" continue`.
+6. Repeat until completion or error.
+7. Run relevant checks only if conflicts occurred and were resolved.
+8. Invoke `show-me` only for choices between incompatible business intentions
+   or code designs. Summarize only those choices.
+9. Do not invoke `show-me` for mechanical resolutions, including keeping both changes.
+
+Do not automatically stash, skip commits, abort the rebase, or push.

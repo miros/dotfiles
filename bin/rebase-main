@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+trap 'printf "status=error\n" >&2' ERR
+
+fail() {
+  printf 'status=error\n%s\n' "$*" >&2
+  exit 1
+}
+
+rebasing() {
+  [[ -d "$(git rev-parse --git-path rebase-merge)" ||
+     -d "$(git rev-parse --git-path rebase-apply)" ]]
+}
+
+conflicted() {
+  [[ -n "$(git diff --name-only --diff-filter=U)" ]]
+}
+
+report_result() {
+  local result="$1"
+
+  if (( result == 0 )); then
+    printf 'status=completed\n'
+  elif rebasing && conflicted; then
+    printf 'status=conflicts\n'
+    git diff --name-only --diff-filter=U
+  else
+    fail "Git stopped without unresolved conflicts. Inspect its diagnostics."
+  fi
+}
+
+[[ $# == 1 ]] || fail "Usage: rebase-main start|continue"
+operation="$1"
+
+root="$(git rev-parse --show-toplevel)"
+cd "$root"
+
+if [[ "$operation" == start ]] && rebasing; then
+  operation=continue
+fi
+
+case "$operation" in
+  start)
+    branch="$(git symbolic-ref --quiet --short HEAD)" ||
+      fail "Detached HEAD."
+
+    for marker in MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD BISECT_START; do
+      [[ ! -e "$(git rev-parse --git-path "$marker")" ]] ||
+        fail "Another Git operation is active: $marker"
+    done
+
+    [[ -z "$(git status --porcelain --untracked-files=normal \
+      --ignore-submodules=none)" ]] ||
+      fail "The working tree is not clean."
+
+    remote="$(git config --get "branch.$branch.remote" || true)"
+    if [[ -z "$remote" ]]; then
+      [[ "$(git remote)" == origin ]] ||
+        fail "No tracking remote and origin is not the only remote."
+      remote=origin
+    fi
+
+    [[ "$remote" != "." ]] ||
+      fail "The branch tracks a local branch, not a remote."
+    git remote get-url "$remote" >/dev/null
+
+    remote_head="$(git ls-remote --symref -- "$remote" HEAD)"
+    default_ref="$(printf '%s\n' "$remote_head" |
+      awk '$1 == "ref:" && $3 == "HEAD" { print $2 }')"
+
+    [[ "$default_ref" == refs/heads/* ]] ||
+      fail "Cannot determine the remote default branch."
+
+    target="refs/remotes/$remote/${default_ref#refs/heads/}"
+    git fetch -- "$remote" "+$default_ref:$target"
+    target_commit="$(git rev-parse --verify "$target^{commit}")"
+
+    printf 'target=%s\n' "$target"
+
+    if GIT_EDITOR=true GIT_SEQUENCE_EDITOR=true \
+      git -c rebase.autoStash=false rebase "$target_commit"; then
+      report_result 0
+    else
+      report_result "$?"
+    fi
+    ;;
+
+  continue)
+    rebasing || fail "No rebase is active."
+    if conflicted; then
+      report_result 1
+      exit 0
+    fi
+
+    if GIT_EDITOR=true GIT_SEQUENCE_EDITOR=true \
+      git -c rebase.autoStash=false rebase --continue; then
+      report_result 0
+    else
+      report_result "$?"
+    fi
+    ;;
+
+  *)
+    fail "Usage: rebase-main start|continue"
+    ;;
+esac
