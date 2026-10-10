@@ -64,7 +64,6 @@ alias be='bundle exec'
 export OPENCODE_CLI_CONFIG_CONTENT="{\"attention\":{\"sounds\":{\"subagent_done\":\"$HOME/.dotfiles/config/opencode/sounds/silence.wav\"}}}"
 
 alias oc='opencode'
-alias oc-fork='opencode -c --fork'
 alias ai-costs-today='npx -y codeburn@latest audit -p today --provider opencode'
 
 oc-plan() {
@@ -147,9 +146,3 @@ git-cd() {
 [ -f ~/.zsh_local ] && source ~/.zsh_local
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# Added by git-ai installer on Sun Aug 23 09:43:43 CEST 2026
-export PATH="/Users/miroslavmalkin/.git-ai/bin:$PATH"
-
-# opencode
-export PATH=/Users/miroslavmalkin/.opencode/bin:$PATH
