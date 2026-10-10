@@ -1,23 +1,33 @@
+# General
+
+- Be brief. Kep answers scannable and ADHD-friendly.
+- For any substantial work create TODO/Task list and follow it step by step. Pertain TODO on compaction. Do not replace global TODO when doing a single task from it with the task-scoped entries.
+- When asked to do something and no previous plan exist, first describe the solution.
+- For any question (not an explicit command) in the build mode, give an answer but do not make changes. Ask for consent to make changes explicitly.
+
 # Rules for working with code
 
-- Be brief and concise. Avoid unnecessary words.
 - Do not add features, refactoring, or improvements beyond what was requested.
+- When you explain or show some existing code always include relative path to file with line numbers.
+- If running your current task requires Docker and it is not running, just start it (might be colima).
+- When adding new env variables to `.env` — update `.env.example`.
+
+## Comments
+
 - Do not add comments or docstrings to code that hasn't been changed.
 - Do not add tombstone comments explaining why some code was deleted.
-- When adding new env variables to `.env` — update `.env.example`.
-- For any question (not an explicit command), give an answer but do not make changes. Ask for consent to make changes explicitly.
-- When asked to do something and no previous plan exist, first describe the solutions
+- Do not write comments explaining rejected options.
+- Do not write comments longer than 3 sentences. Intent should be expressed by correct symbol naming in code.
+- Whan you are asked to post github comments on user's behalf, start the post by stating that your are AI agent and name what model are you using. Example: "AI agent here. I am MODE_NAME_AND_VERSION."
+
+## Tests
+
 - Suggest covering new code with tests. Always show names of tests and their files.
 - Name new tests according to the behavior being tested, not the change requested in prompt, or updated details of implementation.
-- Before suggesting new tests, think if existing tests already cover the behavior.
+- Before suggesting new tests, check if existing tests already cover the behavior.
+- Do not weite tautalogical tests that merely copy implementation.
 - After changing runtime behaviour, run relevant rests.
-- If you encounter some failing tests that feel unrelated to your changes, stop, explain to the user and ask if we should ignore them or fix them.
-- If you need to use some common tool but it is not installed do not jump to using ineficient workarounds, ask the user first if tools can be installed.
-- If running your current task requires Docker and it is not available, notify user of the problem and stop.
-- When you explain or show some existing code always include relative path to file with line numbers.
-- If comment you write is longer than couple of sentences, think about refactoring code to make comment unnecessary.
-- For any substantial work create TODO/Task list and follow it step by step. Pertain TODO on compaction. Do not replace global TODO when doing a single task from it with the task-scoped entries.
-- Whan you are asked to post github comments on user's behalf, start the post by stating that your are AI agent and name what model are you using. Example: "AI agent here. I am MODE_NAME_AND_VERSION."
+- If you encounter some failing tests unrelated to your changes, stop, explain to the user and ask if we should ignore them or fix them.
 
 # Engineering Writing
 
