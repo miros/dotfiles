@@ -23,7 +23,7 @@ export default Plugin.define({
           const title = join(parent, folder).replace(/[\x00-\x1f\x7f-\x9f]/g, "")
           if (!title || title === previous) return
 
-          context.renderer.setTerminalTitle(`OC ${title}`)
+          context.renderer.setTerminalTitle(`AI ${title}`)
           previous = title
         })
 
