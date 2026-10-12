@@ -1,0 +1,18 @@
+config/opencode/cli.json
+  h_312676f1751749 19
+install/opencode.ts
+  h_312676f1751749 2-12,24-29,33-45,49-53,56-62,102-108
+zshrc
+  h_312676f1751749 94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0622dc3cb3e8fdfb8104f692be0f3f0298a371cc",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
