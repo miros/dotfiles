@@ -5,6 +5,7 @@
 - When asked to do something and no previous plan exist, first describe the solution.
 - At the end of the plan list separatly files that you will update and create (one per line). Skip if empty.
 - For any question (not an explicit command) in the build mode, give an answer but do not make changes. Ask for consent to make changes explicitly.
+- If you find yourself in the wrong project path (user started agent at wrong location), stop and notify user.
 
 # Rules for working with code
 
