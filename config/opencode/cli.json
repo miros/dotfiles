@@ -16,7 +16,7 @@
     "indicators": "status"
   },
   "session": {
-    "sidebar": "auto",
+    "sidebar": "hide",
     "scrollbar": false,
     "thinking": "show"
   },

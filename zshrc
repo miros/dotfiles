@@ -91,6 +91,7 @@ export FZF_CTRL_T_COMMAND="command find -L . \\( -path './\\.*' -o -fstype 'dev'
 export ERL_AFLAGS="-kernel shell_history enabled -kernel shell_history_file_bytes 1024000"
 
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.opencode/bin:$PATH"
 
 git-rebase-main() {
   git fetch origin || return

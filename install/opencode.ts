@@ -1,5 +1,15 @@
 #!/usr/bin/env bun
-import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, symlinkSync } from "node:fs"
+import { spawnSync } from "node:child_process"
+import {
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  readlinkSync,
+  symlinkSync,
+  unlinkSync,
+} from "node:fs"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import { $ } from "bun"
@@ -11,20 +21,45 @@ const CONFIG_FILES = ["AGENTS.md", "opencode.json", "cli.json", "tui.json"]
 const COMMANDS_DIR = "commands"
 const PLUGINS_DIR = "plugins"
 
+const conflicts: string[] = []
+
+function hasSameContent(a: string, b: string) {
+  return lstatSync(b).isFile() && readFileSync(a).equals(readFileSync(b))
+}
+
 function link(target: string, linkPath: string) {
   const stat = lstatSync(linkPath, { throwIfNoEntry: false })
 
-  if (stat?.isSymbolicLink() && readlinkSync(linkPath) === target) {
-    console.log(`ok        ${linkPath}`)
+  if (!stat) {
+    symlinkSync(target, linkPath)
+    console.log(`linked    ${linkPath}`)
     return
   }
 
-  if (stat) {
-    throw new Error(`Destination already exists: ${linkPath}`)
+  if (stat.isSymbolicLink()) {
+    if (readlinkSync(linkPath) === target) {
+      console.log(`ok        ${linkPath}`)
+      return
+    }
+    conflicts.push(`${linkPath} -> ${readlinkSync(linkPath)} (expected ${target})`)
+    console.log(`conflict  ${linkPath}`)
+    return
   }
 
-  symlinkSync(target, linkPath)
-  console.log(`linked    ${linkPath}`)
+  if (stat.isFile() && hasSameContent(linkPath, target)) {
+    unlinkSync(linkPath)
+    symlinkSync(target, linkPath)
+    console.log(`relinked  ${linkPath}`)
+    return
+  }
+
+  if (stat.isFile() && lstatSync(target).isFile()) {
+    const diff = spawnSync("diff", ["-u", target, linkPath], { encoding: "utf8" }).stdout
+    conflicts.push(`${linkPath} differs from ${target}\n${diff}`)
+  } else {
+    conflicts.push(`${linkPath} exists and is not a symlink to ${target}`)
+  }
+  console.log(`conflict  ${linkPath}`)
 }
 
 function linkFromRepo(relativePath: string) {
@@ -64,4 +99,11 @@ async function installPluginDependencies() {
 linkConfigFiles()
 linkCommands()
 linkPlugins()
+
+if (conflicts.length > 0) {
+  console.error(`\n${conflicts.length} conflict(s):\n`)
+  conflicts.forEach((conflict) => console.error(`${conflict}\n`))
+  process.exit(1)
+}
+
 await installPluginDependencies()
