@@ -1,0 +1,14 @@
+zshrc
+  h_312676f1751749 54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a74d719061db2010b6df027d90067ff6cbf2a6c0",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
