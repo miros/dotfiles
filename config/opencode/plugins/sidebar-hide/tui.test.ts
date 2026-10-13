@@ -85,6 +85,30 @@ test("shows Hide left-aligned on the last row below the path", async () => {
   expect(lines[4]).toBe("[Hide]                        ")
 })
 
+test("hovering Hide turns its text white", async () => {
+  const view = await createHarness()
+  expect(view.captureSpans().lines[4].spans.find(span => span.text.includes("[Hide]"))?.fg.toInts())
+    .toEqual([136, 136, 136, 255])
+  await view.mockMouse.moveTo(2, 4)
+  await view.flush()
+  expect(view.captureSpans().lines[4].spans.find(span => span.text.includes("[Hide]"))?.fg.toInts())
+    .toEqual([255, 255, 255, 255])
+  expect(view.dispatch).not.toHaveBeenCalled()
+})
+
+test("leaving Hide restores its muted color", async () => {
+  const view = await createHarness()
+  await view.mockMouse.moveTo(2, 4)
+  await view.flush()
+  expect(view.captureSpans().lines[4].spans.find(span => span.text.includes("[Hide]"))?.fg.toInts())
+    .toEqual([255, 255, 255, 255])
+  await view.mockMouse.moveTo(2, 3)
+  await view.flush()
+  expect(view.captureSpans().lines[4].spans.find(span => span.text.includes("[Hide]"))?.fg.toInts())
+    .toEqual([136, 136, 136, 255])
+  expect(view.dispatch).not.toHaveBeenCalled()
+})
+
 test("left-clicking Hide closes the sidebar", async () => {
   const view = await createHarness()
   await view.mockMouse.click(2, 4)

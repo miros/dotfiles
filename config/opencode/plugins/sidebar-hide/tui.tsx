@@ -1,7 +1,8 @@
 import { Plugin } from "@opencode/plugin/tui"
-import { createEffect } from "solid-js"
+import { createEffect, createSignal } from "solid-js"
 
 function HideButton(props: { context: Plugin.Context; sessionID: string }) {
+  const [hovered, setHovered] = createSignal(false)
   let pressed = false
 
   createEffect(() => {
@@ -12,8 +13,9 @@ function HideButton(props: { context: Plugin.Context; sessionID: string }) {
   return (
     <box width="100%" alignItems="flex-start">
       <text
-        fg={props.context.theme.text.muted}
+        fg={hovered() ? "#ffffff" : props.context.theme.text.muted}
         selectable={false}
+        onMouseOver={() => setHovered(true)}
         onMouseDown={event => {
           if (event.button !== 0) return
           event.stopPropagation()
@@ -29,6 +31,7 @@ function HideButton(props: { context: Plugin.Context; sessionID: string }) {
           if (clicked) props.context.keymap.dispatch("session.sidebar.toggle")
         }}
         onMouseOut={() => {
+          setHovered(false)
           pressed = false
         }}
         onMouseDrag={() => {
