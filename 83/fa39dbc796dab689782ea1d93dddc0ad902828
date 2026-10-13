@@ -1,0 +1,14 @@
+config/opencode/commands/explain-the-problem.md
+  h_312676f1751749 1-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "83fa39dbc796dab689782ea1d93dddc0ad902828",
+  "prompts": {},
+  "humans": {
+    "h_312676f1751749": {
+      "author": "miros <mirosm@mirosm.ru>"
+    }
+  }
+}
