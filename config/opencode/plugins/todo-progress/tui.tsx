@@ -15,7 +15,7 @@ type TodoClient = {
 
 function formatProgress(todos: readonly Todo[]) {
   const active = todos.filter(todo => todo.status !== "cancelled")
-  if (active.length === 0) return undefined
+  if (active.length === 0) return "todo:[]"
   const completed = active.filter(todo => todo.status === "completed").length
   return `todo:${completed}/${active.length}`
 }
@@ -26,7 +26,7 @@ function TodoProgress(props: {
   sessionID?: string
   openSidebar: () => void
 }) {
-  const [todos, setTodos] = createSignal<readonly Todo[]>([])
+  const [todos, setTodos] = createSignal<readonly Todo[] | undefined>([])
   let pressedSessionID: string | undefined
 
   createEffect(() => {
@@ -43,7 +43,7 @@ function TodoProgress(props: {
         const result = await props.client.list({ sessionID }) as { todos: Todo[] }
         if (active && request === currentRequest) setTodos(result.todos)
       } catch {
-        if (active && request === currentRequest) setTodos([])
+        if (active && request === currentRequest) setTodos(undefined)
       }
     }
 
@@ -61,8 +61,9 @@ function TodoProgress(props: {
   })
 
   const label = () => {
-    if (!props.sessionID || props.context.data.session.status(props.sessionID) !== "running") return undefined
-    return formatProgress(todos())
+    if (!props.sessionID) return undefined
+    const current = todos()
+    return current === undefined ? undefined : formatProgress(current)
   }
 
   return (

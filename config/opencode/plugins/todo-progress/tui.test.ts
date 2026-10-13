@@ -115,25 +115,38 @@ test("shows zero completed todos while work is pending", async () => {
   expect(view.captureCharFrame()).toContain("todo:0/2")
 })
 
-test("hides the counter when there are no todos", async () => {
+test("shows todo:[] when there are no todos", async () => {
   const view = await createHarness({ todos: [] })
-  expect(view.captureCharFrame()).not.toContain("todo:")
+  expect(view.captureCharFrame()).toContain("todo:[]")
 })
 
-test("hides the counter when every todo is cancelled", async () => {
+test("shows todo:[] when every todo is cancelled", async () => {
   const view = await createHarness({ todos: [{ status: "cancelled" }] })
-  expect(view.captureCharFrame()).not.toContain("todo:")
+  expect(view.captureCharFrame()).toContain("todo:[]")
 })
 
-test("shows the counter only while the session is running", async () => {
+test("shows todo:[] when todos are cleared", async () => {
+  const view = await createHarness()
+  expect(view.captureCharFrame()).toContain("todo:1/2")
+  view.changeTodos([])
+  await view.flush()
+  expect(view.captureCharFrame()).toContain("todo:[]")
+})
+
+test("keeps the counter visible when the session becomes idle", async () => {
   const view = await createHarness({ running: false })
-  expect(view.captureCharFrame()).not.toContain("todo:")
+  expect(view.captureCharFrame()).toContain("todo:1/2")
   view.setRunning(true)
   await view.flush()
   expect(view.captureCharFrame()).toContain("todo:1/2")
   view.setRunning(false)
   await view.flush()
-  expect(view.captureCharFrame()).not.toContain("todo:")
+  expect(view.captureCharFrame()).toContain("todo:1/2")
+})
+
+test("shows todo:[] in an idle session with no todos", async () => {
+  const view = await createHarness({ todos: [], running: false })
+  expect(view.captureCharFrame()).toContain("todo:[]")
 })
 
 test("refreshes the counter when the current session's todos change", async () => {
