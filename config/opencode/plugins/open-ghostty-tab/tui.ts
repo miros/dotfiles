@@ -45,6 +45,7 @@ export default Plugin.define({
           id: "local.open-ghostty-tab.open",
           title: "Open Ghostty tab here",
           group: "Ghostty",
+          bind: "<leader>/",
           palette: true,
           slash: { name: "open-ghostty-tab" },
           run: open,
