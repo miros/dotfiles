@@ -1,0 +1,15 @@
+{
+  "name": "opencode-zed",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./tui": "./tui.ts"
+  },
+  "scripts": {
+    "test": "bun test tui.test.ts"
+  },
+  "devDependencies": {
+    "@opencode/plugin": "2.0.29",
+    "solid-js": "1.9.16"
+  }
+}
