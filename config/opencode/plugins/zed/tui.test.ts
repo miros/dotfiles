@@ -350,12 +350,12 @@ test("does not reuse a captured selection for a palette or slash command", async
   expect(view.spawn.mock.calls[0][1]).toEqual(["--classic", view.directory])
 })
 
-test("shows the opened file and line after Zed exits successfully", async () => {
+test.each([undefined, "some file.ts:42:7"])("does not show a toast after Zed exits successfully (%s)", async selection => {
   const view = createHarness()
-  view.select("some file.ts:42:7")
+  view.select(selection)
   await view.command.run()
   view.child.emit("exit", 0)
-  expect(view.toast).toHaveBeenCalledWith({ message: `Opened in Zed: ${view.file}:42`, variant: "success" })
+  expect(view.toast).not.toHaveBeenCalled()
 })
 
 test("shows a launch error without reporting success", async () => {

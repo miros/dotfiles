@@ -90,9 +90,7 @@ export default Plugin.define({
         context.ui.toast.show({ title: "Zed", message: error.message, variant: "error" })
       })
       child.on("exit", (code) => {
-        if (code === 0) {
-          context.ui.toast.show({ message: `Opened in Zed: ${context.ui.format.path(target)}`, variant: "success" })
-        } else {
+        if (code !== 0) {
           context.ui.toast.show({ title: "Zed", message: `zed exited with code ${code}`, variant: "error" })
         }
       })
