@@ -7,7 +7,10 @@
     "model.cycle_favorite": "ctrl+m"
   },
   "diffs": {
-    "wrap": "word"
+    "wrap": "word",
+    "source": "turn",
+    "fullscreen": false,
+    "view": "split"
   },
   "tabs": {
     "enabled": true,
