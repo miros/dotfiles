@@ -1,1 +1,7 @@
 node_modules/
+/config/opencode/service.json
+/config/opencode/*.tmp
+/config/opencode/.gitignore
+/config/opencode/package.json
+/config/opencode/package-lock.json
+/config/opencode/bun.lock

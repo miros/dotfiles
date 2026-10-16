@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, test } from "bun:test"
-import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, readlinkSync, rmSync, symlinkSync, writeFileSync } from "node:fs"
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, readlinkSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
@@ -14,8 +14,7 @@ beforeEach(() => {
   config = join(home, ".config/opencode")
   mkdirSync(join(repo, "commands"), { recursive: true })
   mkdirSync(join(repo, "plugins/example"), { recursive: true })
-  mkdirSync(config, { recursive: true })
-  for (const name of ["AGENTS.md", "opencode.json", "cli.json", "tui.json", "commands/example.md", "plugins/example/index.ts"]) {
+  for (const name of ["AGENTS.md", "cli.json", "commands/example.md", "plugins/example/index.ts"]) {
     writeFileSync(join(repo, name), "original")
   }
 })
@@ -30,43 +29,94 @@ function install() {
   })
 }
 
-test("links repository entries inside real config directories", () => {
+function createConfigDirectoryWithFileLinks() {
+  mkdirSync(join(config, "commands"), { recursive: true })
+  mkdirSync(join(config, "plugins"), { recursive: true })
+  for (const name of ["AGENTS.md", "cli.json", "commands/example.md", "plugins/example"]) {
+    symlinkSync(join(repo, name), join(config, name))
+  }
+}
+
+function backups() {
+  return readdirSync(join(home, ".config")).filter(name => name.startsWith("opencode.backup-"))
+}
+
+test("links the config directory to the repository", () => {
+  expect(install().exitCode).toBe(0)
+  expect(readlinkSync(config)).toBe(repo)
+})
+
+test("keeps the directory symlink on repeated installation", () => {
+  expect(install().exitCode).toBe(0)
   const result = install()
   expect(result.exitCode).toBe(0)
-  for (const dir of ["commands", "plugins"]) {
-    expect(lstatSync(join(config, dir)).isDirectory()).toBe(true)
-  }
-  for (const name of ["AGENTS.md", "commands/example.md", "plugins/example"]) {
-    expect(readlinkSync(join(config, name))).toBe(join(repo, name))
+  expect(result.stdout.toString()).toContain(`ok        ${config}`)
+  expect(readlinkSync(config)).toBe(repo)
+})
+
+test("moves local-only files into the repository", () => {
+  createConfigDirectoryWithFileLinks()
+  writeFileSync(join(config, "service.json"), "secret")
+  writeFileSync(join(config, "commands/local.md"), "local")
+
+  expect(install().exitCode).toBe(0)
+  expect(readlinkSync(config)).toBe(repo)
+  expect(readFileSync(join(repo, "service.json"), "utf8")).toBe("secret")
+  expect(readFileSync(join(repo, "commands/local.md"), "utf8")).toBe("local")
+})
+
+test("keeps service.json permissions after moving", () => {
+  createConfigDirectoryWithFileLinks()
+  writeFileSync(join(config, "service.json"), "secret", { mode: 0o600 })
+
+  expect(install().exitCode).toBe(0)
+  expect(statSync(join(repo, "service.json")).mode & 0o777).toBe(0o600)
+})
+
+test("leaves legacy dependency files in the backup only", () => {
+  createConfigDirectoryWithFileLinks()
+  for (const name of [".gitignore", "package.json", "package-lock.json", "bun.lock"]) writeFileSync(join(config, name), "legacy")
+  mkdirSync(join(config, "node_modules"))
+
+  expect(install().exitCode).toBe(0)
+  const [backup] = backups()
+  for (const name of [".gitignore", "package.json", "package-lock.json", "bun.lock", "node_modules"]) {
+    expect(existsSync(join(repo, name))).toBe(false)
+    expect(existsSync(join(home, ".config", backup, name))).toBe(true)
   }
 })
 
-test("keeps correct symlinks on repeated installation", () => {
+test("backs up the old config directory before linking", () => {
+  createConfigDirectoryWithFileLinks()
+
   expect(install().exitCode).toBe(0)
-  expect(install().exitCode).toBe(0)
-  expect(readlinkSync(join(config, "plugins/example"))).toBe(join(repo, "plugins/example"))
+  const [backup] = backups()
+  expect(readlinkSync(join(home, ".config", backup, "AGENTS.md"))).toBe(join(repo, "AGENTS.md"))
 })
 
-test.each(["file", "directory", "symlink"])("fails without changing a conflicting %s", (type) => {
-  const destination = join(config, "AGENTS.md")
-  if (type === "file") writeFileSync(destination, "local")
-  if (type === "directory") mkdirSync(destination)
-  if (type === "symlink") symlinkSync(join(home, "missing"), destination)
+test("fails without changes when a local file differs from the repository file", () => {
+  createConfigDirectoryWithFileLinks()
+  rmSync(join(config, "cli.json"))
+  writeFileSync(join(config, "cli.json"), "local")
+  writeFileSync(join(config, "service.json"), "secret")
 
   const result = install()
   expect(result.exitCode).not.toBe(0)
-  expect(result.stderr.toString()).toContain(`Destination already exists: ${destination}`)
-  expect(existsSync(`${destination}.bak`)).toBe(false)
-  if (type === "file") expect(readFileSync(destination, "utf8")).toBe("local")
-  if (type === "directory") expect(lstatSync(destination).isDirectory()).toBe(true)
-  if (type === "symlink") expect(readlinkSync(destination)).toBe(join(home, "missing"))
+  expect(result.stderr.toString()).toContain(`${join(config, "cli.json")} differs from ${join(repo, "cli.json")}`)
+  expect(lstatSync(config).isDirectory()).toBe(true)
+  expect(readFileSync(join(config, "cli.json"), "utf8")).toBe("local")
+  expect(readFileSync(join(repo, "cli.json"), "utf8")).toBe("original")
+  expect(existsSync(join(config, "service.json"))).toBe(true)
+  expect(existsSync(join(repo, "service.json"))).toBe(false)
+  expect(backups()).toEqual([])
 })
 
-test.each(["commands", "plugins"])("fails without changing repository entries through an existing %s directory symlink", (dir) => {
-  symlinkSync(join(repo, dir), join(config, dir))
-  const original = dir === "commands" ? "commands/example.md" : "plugins/example/index.ts"
+test("fails without changes when the config path links to another location", () => {
+  mkdirSync(join(home, ".config"))
+  symlinkSync(join(home, "elsewhere"), config)
 
-  expect(install().exitCode).not.toBe(0)
-  expect(readFileSync(join(repo, original), "utf8")).toBe("original")
-  expect(readdirSync(join(repo, dir)).some(name => name.endsWith(".bak"))).toBe(false)
+  const result = install()
+  expect(result.exitCode).not.toBe(0)
+  expect(result.stderr.toString()).toContain(`${config} -> ${join(home, "elsewhere")} (expected ${repo})`)
+  expect(readlinkSync(config)).toBe(join(home, "elsewhere"))
 })
