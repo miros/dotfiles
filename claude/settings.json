@@ -64,7 +64,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "terminal-notifier -title 'Claude Code' -message 'Done' -sound Glass"
+            "command": "afplay /System/Library/Sounds/Glass.aiff &"
           }
         ]
       }
@@ -75,7 +75,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "terminal-notifier -title 'Claude Code' -message 'Claude needs your attention' -sound Glass"
+            "command": "afplay /System/Library/Sounds/Glass.aiff &"
           }
         ]
       }
