@@ -64,6 +64,7 @@ alias be='bundle exec'
 
 export OPENCODE_CLI_CONFIG_CONTENT="{\"attention\":{\"sounds\":{\"subagent_done\":\"$HOME/.dotfiles/config/opencode/sounds/silence.wav\"}}}"
 
+alias claude='claude --settings $HOME/.dotfiles/claude/settings.json'
 alias oc='opencode'
 alias ai-costs-today='npx -y codeburn@latest audit -p today --provider opencode'
 
