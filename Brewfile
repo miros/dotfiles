@@ -22,3 +22,4 @@ brew "lazygit"
 brew "fd"
 brew "ouch" # archiver
 brew "pgcli"
+brew "zoxide"

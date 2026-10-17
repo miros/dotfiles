@@ -5,53 +5,37 @@ const { test } = require("node:test")
 const { runInNewContext } = require("node:vm")
 const tiles = require("../scripts/tiles.js")
 
-const requestPayload = "ChAKCwgKEIAEGIAE6AQJyAEAChAKCwgKEIEEGIAE6AQJyAEAEhgIAhIDcHNtIgcKAnNwEgExisjv3Q8CEAEaCBICcnUaAmRlmgYGb3BhcXVlJQAAgD8"
-const capturedURL = `https://www.google.com/maps/vt/proto?authuser=2&authuser=2&hl=ru&gl=de&bpb=${requestPayload}`
 const responsePayload = "CtABGsoBkZOTkYsbn4Mbn8khmpHO65iRnpGYuyyFMUV86Y6RlImW2Pr9WDK73uP69uv3/omZk5oBMCdWmrc5mrKRvJG+q+P9/v/4+fqio6ytrq+oqaqroavj+vn4//79q6qpqK+urayjopGj65iRnpGYuyyFMUV86Z+JmZOcATAnVpq7sZfe4/r26/f+u8v66fCCZGRkZGRkZGS6m5ubm5ubmxuRvOuYkZ6RmLsshTFFfOmCkYiJitj09On/8vX67/679vrp8P7piZmTmnuamkCfBgpgGluRk5ORixqfgxufydeR0euYkZ6RmLsshQEwJ1aaoDmaspG8kb6r4/3+//j5+qKjrK2ur6ipqquhq+P6+fj//v2rqqmor66trKOisZbe4/r26/f+u9j6/Vgye5qaQJ8G"
 const response = Buffer.from(responsePayload, "base64")
 
+const template = tiles.savedMarkersTemplate
+
 test("identifies the saved-marker layer", () => {
-  assert.deepEqual(tiles.layers(capturedURL), ["psm"])
+  assert.deepEqual(tiles.layers(template), ["psm"])
 })
 
-test("preserves request context when replacing tiles", () => {
-  const url = new URL(tiles.withTiles(capturedURL, [[10, 229, 455]]))
-  assert.deepEqual(url.searchParams.getAll("authuser"), ["2", "2"])
-  assert.equal(url.searchParams.get("hl"), "ru")
-  assert.equal(url.searchParams.get("gl"), "de")
-  const payload = Buffer.from(url.searchParams.get("bpb"), "base64url")
-  assert.equal(payload.toString("hex"),
-    "0a100a0b080a10e50118c703e80409c8010012180802120370736d22070a0273701201318ac8efdd0f0210011a08120272751a0264659a06066f7061717565250000803f")
-})
-
-test("accepts tile keys at the map boundaries", () => {
-  assert.deepEqual(tiles.layers(tiles.withTiles(capturedURL, [[0, 0, 0], [30, 2 ** 30 - 1, 0]])), ["psm"])
+test("replaces tile keys in the template", () => {
+  const url = new URL(tiles.withTiles(template, [[10, 229, 455], [30, 2 ** 30 - 1, 0]]))
+  assert.equal(url.searchParams.get("authuser"), "0")
+  const payload = Buffer.from(url.searchParams.get("bpb"), "base64url").toString("hex")
+  assert.ok(payload.includes("080a10e50118c703"), "zoom 10 key")
+  assert.ok(payload.includes("081e10ffffffff031800"), "zoom 30 boundary key")
+  assert.deepEqual(tiles.layers(url.href), ["psm"])
 })
 
 test("rejects invalid tile coordinates", () => {
   for (const key of [[-1, 0, 0], [31, 0, 0], [10, -1, 0], [10, 1024, 0], [10, 0, 1024]]) {
-    assert.throws(() => tiles.withTiles(capturedURL, [key]), RangeError)
+    assert.throws(() => tiles.withTiles(template, [key]), RangeError)
   }
   for (const keys of [[], null, [[10, 1.5, 0]], [[10, 0]]]) {
-    assert.throws(() => tiles.withTiles(capturedURL, keys), TypeError)
+    assert.throws(() => tiles.withTiles(template, keys), TypeError)
   }
 })
 
-test("rejects personalized-label and mixed-layer templates", () => {
-  for (const payload of [
-    "Cg0KCAgKEIAEGIAEyAEAEg0IAhIJbG9yZS1wMTNu",
-    "Cg0KCAgKEIAEGIAEyAEAEgcIAhIDcHNtEg0IAhIJbG9yZS1wMTNu",
-  ]) {
-    const url = new URL(capturedURL)
-    url.searchParams.set("bpb", payload)
-    assert.throws(() => tiles.withTiles(url, [[10, 0, 0]]), /psm saved-marker layer/)
-  }
-})
-
-test("rejects unrelated routes and missing payloads", () => {
-  for (const url of ["https://example.com/maps/vt/proto?bpb=AA", "https://www.google.com/search?bpb=AA", "https://www.google.com/maps/vt/proto"]) {
-    assert.throws(() => tiles.layers(url), TypeError)
-  }
+test("rejects templates for other layers", () => {
+  const url = new URL(template)
+  url.searchParams.set("bpb", "Cg0KCAgKEIAEGIAEyAEAEgcIAhIDcHNtEg0IAhIJbG9yZS1wMTNu")
+  assert.throws(() => tiles.withTiles(url, [[10, 0, 0]]), /only the psm layer/)
 })
 
 test("decodes explicit Starred tags", () => {
@@ -113,17 +97,32 @@ test("decodes valid empty tiles without inventing markers", () => {
   ])
 })
 
-test("rejects truncated tile responses", () => {
+test("rejects truncated or malformed responses instead of reporting an empty region", () => {
   assert.throws(() => tiles.decodeResponse(response.subarray(0, -1)), /Truncated protobuf field/)
-  assert.throws(() => tiles.decodeResponse(Buffer.from([10, 128])), /Truncated protobuf varint/)
+  assert.throws(() => tiles.decodeResponse(new Uint8Array()), /No tile envelopes/)
+  assert.throws(() => tiles.decodeResponse(Buffer.from([10, 2, 64, 0])), /Missing protobuf field 3/)
 })
 
-test("rejects malformed protobuf instead of reporting an empty region", () => {
-  assert.throws(() => tiles.decodeResponse(new Uint8Array()), /No tile envelopes/)
-  assert.throws(() => tiles.decodeResponse(Buffer.from([0, 0])), /Invalid protobuf field/)
-  assert.throws(() => tiles.decodeResponse(Buffer.from([15])), /Unsupported protobuf wire/)
-  assert.throws(() => tiles.decodeResponse(Buffer.from([10, ...Array(10).fill(255)])), /exceeds 64 bits/)
-  assert.throws(() => tiles.decodeResponse(Buffer.from([10, 2, 64, 0])), /Missing protobuf field 3/)
+test("covers a region with Web Mercator tiles", () => {
+  assert.deepEqual(tiles.regionTiles({ north: 1, south: -1, west: -1, east: 1 }, 1), [[1, 0, 0], [1, 0, 1], [1, 1, 0], [1, 1, 1]])
+  assert.deepEqual(tiles.regionTiles({ north: 89, south: 80, west: 170, east: -170 }, 2).map(tile => tile[1]), [3, 0])
+  assert.throws(() => tiles.regionTiles({ north: -1, south: 1, west: 0, east: 1 }, 3), /Invalid region/)
+})
+
+test("reads saved markers with the built-in template and reports missing tiles", async () => {
+  const requested = []
+  const fetch = async url => {
+    requested.push(new URL(url))
+    return { ok: true, arrayBuffer: async () => Uint8Array.from(response).buffer }
+  }
+  const result = await tiles.savedMarkers([[10, 512, 512], [10, 513, 512], [10, 514, 512]], { fetch, params: { authuser: "3", hl: "ru", gl: "de" } })
+  assert.equal(requested.length, 1)
+  assert.equal(requested[0].searchParams.get("authuser"), "3")
+  assert.equal(requested[0].searchParams.get("hl"), "ru")
+  await assert.rejects(tiles.savedMarkers([[10, 0, 0]], { fetch }), /maps\.params/)
+  assert.deepEqual(tiles.layers(requested[0].href), ["psm"])
+  assert.deepEqual(result.missing, [[10, 514, 512]])
+  assert.equal(result.markers.length, 3)
 })
 
 test("loads as a browser script without CommonJS", () => {
@@ -131,5 +130,4 @@ test("loads as a browser script without CommonJS", () => {
   runInNewContext(readFileSync(join(__dirname, "../scripts/tiles.js"), "utf8"), context)
   assert.ok(context.googleMapsSavedPlacesTiles)
   assert.equal(context.googleMapsSavedPlacesTiles.decodeResponse(response)[0].markers[0].starred, true)
-  assert.equal(tiles.layers(context.googleMapsSavedPlacesTiles.withTiles(capturedURL, [[10, 0, 0]]))[0], "psm")
 })

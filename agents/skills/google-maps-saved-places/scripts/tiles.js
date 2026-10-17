@@ -97,7 +97,7 @@
   function request(url) {
     const parsed = new URL(url)
     if (parsed.origin !== "https://www.google.com" || parsed.pathname !== "/maps/vt/proto") {
-      throw new TypeError("Expected a captured Google Maps tile URL")
+      throw new TypeError("Expected a /maps/vt/proto URL")
     }
     const payload = parsed.searchParams.get("bpb")
     if (!payload) throw new TypeError("Missing bpb query parameter")
@@ -105,9 +105,12 @@
     return { url: parsed, items: fields(Uint8Array.from(binary, character => character.charCodeAt(0))) }
   }
 
+  function layerNames(items) {
+    return items.filter(item => item.number === 2 && item.wire === 2).map(item => text(fields(item.value), 2))
+  }
+
   function layers(url) {
-    return request(url).items.filter(item => item.number === 2 && item.wire === 2)
-      .map(item => text(fields(item.value), 2))
+    return layerNames(request(url).items)
   }
 
   function validateTile(tile) {
@@ -128,12 +131,10 @@
   function withTiles(url, tiles) {
     if (!Array.isArray(tiles) || !tiles.length) throw new TypeError("Expected at least one tile")
     tiles.forEach(validateTile)
-    const captured = request(url)
-    const sources = layers(url)
-    if (sources.length !== 1 || sources[0] !== "psm") {
-      throw new TypeError("Capture the psm saved-marker layer, not personalized labels or base tiles")
-    }
-    const template = message(captured.items, 1)
+    const parsed = request(url)
+    const sources = layerNames(parsed.items)
+    if (sources.length !== 1 || sources[0] !== "psm") throw new TypeError("Template must request only the psm layer")
+    const template = message(parsed.items, 1)
     const key = message(template, 1)
     tileKey(key)
     const replacements = tiles.map(tile => {
@@ -144,14 +145,14 @@
       return { number: 1, wire: 2, value }
     })
     let inserted = false
-    const items = captured.items.flatMap(item => {
+    const items = parsed.items.flatMap(item => {
       if (item.number !== 1 || item.wire !== 2) return [item]
       if (inserted) return []
       inserted = true
       return replacements
     })
-    captured.url.searchParams.set("bpb", base64url(encode(items)))
-    return captured.url.toString()
+    parsed.url.searchParams.set("bpb", base64url(encode(items)))
+    return parsed.url.toString()
   }
 
   function featureId(metadata) {
@@ -205,7 +206,7 @@
       if (previous) {
         previous.name ||= marker.name
         previous.savedTags = [...new Set([...previous.savedTags, ...marker.savedTags])]
-        previous.starred ||= marker.starred || previous.savedTags.includes("1")
+        previous.starred = previous.savedTags.includes("1")
       } else {
         const copy = { ...marker, savedTags: [...marker.savedTags] }
         result.push(copy)
@@ -215,7 +216,56 @@
     return result
   }
 
-  const protocol = Object.freeze({ layers, withTiles, decodeResponse, mergeMarkers })
+  // psm request from Maps build 20261013 with its session-ID field (27) removed.
+  const savedMarkersTemplate = "https://www.google.com/maps/vt/proto?authuser=0&bpb=" +
+    "CgsKBggFEBkYC8oBABIYCAISA3BzbSIHCgJzcBIBMYrI790PAhABGiISAnJ1GgJkZSjRCGISCEQSDgoDc2V0EgdSb2FkbWFwoAEBIAEyLwgM" +
+    "EAIwADgBQAKIAQHgAQaAAgG4AgHIAgHYAgHoAgGQAwHgAwGaBAQIARAByAUBogEGGAEwAXgBugFmzsVT0cVTsqxUut2oApW6thbpkrsi6pK7" +
+    "IuySuyK_iMwivfT4LNifgjDt84UwzsVT0cVTut2oAu6f7wSyrFSl_rcWlbq2FumSuyLqkrsi7JK7Ir30-CzAhN8i7fOFMKOpiDC_iMwi4AGf" +
+    "BoACAQ"
+
+  function regionTiles({ north, south, west, east }, zoom) {
+    if (![north, south, west, east].every(Number.isFinite) || north < south) throw new RangeError("Invalid region")
+    validateTile([zoom, 0, 0])
+    const count = 2 ** zoom
+    const clamp = value => Math.min(count - 1, Math.max(0, value))
+    const x = lng => clamp(Math.floor((lng + 180) / 360 * count))
+    const y = lat => {
+      const limited = Math.max(-85.05112878, Math.min(85.05112878, lat)) * Math.PI / 180
+      return clamp(Math.floor((1 - Math.asinh(Math.tan(limited)) / Math.PI) / 2 * count))
+    }
+    const columns = []
+    const range = (from, to) => { for (let column = from; column <= to; column++) columns.push(column) }
+    if (west <= east) range(x(west), x(east))
+    else range(x(west), count - 1), range(0, x(east))
+    const tiles = []
+    for (const column of columns) for (let row = y(north); row <= y(south); row++) tiles.push([zoom, column, row])
+    return tiles
+  }
+
+  async function savedMarkers(tiles, options = {}) {
+    const fetcher = options.fetch ?? root.fetch.bind(root)
+    const template = options.template ?? savedMarkersTemplate
+    const markers = []
+    const missing = []
+    if (!options.params?.authuser) throw new TypeError("Pass { params: maps.params } to read the right account")
+    for (let index = 0; index < tiles.length; index += 32) {
+      const chunk = tiles.slice(index, index + 32)
+      const url = new URL(withTiles(template, chunk))
+      for (const [key, value] of Object.entries(options.params)) url.searchParams.set(key, value)
+      const response = await fetcher(url.href, { credentials: "same-origin", cache: "no-store" })
+      if (!response.ok) throw new Error(`Tile read failed: HTTP ${response.status}`)
+      const decoded = decodeResponse(await response.arrayBuffer())
+      const returned = new Set(decoded.map(tile => tile.tile.join("/")))
+      missing.push(...chunk.filter(tile => !returned.has(tile.join("/"))))
+      markers.push(...decoded.flatMap(tile => tile.markers))
+    }
+    return { markers: mergeMarkers(markers), missing }
+  }
+
+  // layers, withTiles, and decodeResponse are exported as test seams.
+  const protocol = Object.freeze({
+    savedMarkersTemplate, layers, withTiles, decodeResponse, mergeMarkers, regionTiles, savedMarkers,
+  })
   if (typeof module === "object" && module.exports) module.exports = protocol
   else root.googleMapsSavedPlacesTiles = protocol
 })(globalThis)

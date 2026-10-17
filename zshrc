@@ -147,4 +147,6 @@ git-cd() {
 
 [ -f ~/.zsh_local ] && source ~/.zsh_local
 
+eval "$(zoxide init zsh)"
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
