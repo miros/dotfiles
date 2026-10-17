@@ -20,10 +20,13 @@ pct=0
 size=$limit
 
 # Truecolor RGB so the shades don't depend on the terminal theme.
-if   [ "$pct" -ge 80 ]; then color='\033[38;2;239;68;68m'   # red
-elif [ "$pct" -ge 50 ]; then color='\033[38;2;245;158;11m'  # amber
-else color='\033[38;2;74;222;128m'                          # green
-fi
+color_for() {
+  if   [ "$1" -ge 80 ]; then printf '\033[38;2;239;68;68m'   # red
+  elif [ "$1" -ge 50 ]; then printf '\033[38;2;245;158;11m'  # amber
+  else printf '\033[38;2;74;222;128m'                        # green
+  fi
+}
+color=$(color_for "$pct")
 reset='\033[0m'
 
 filled=$((pct / 10))
@@ -32,5 +35,19 @@ for ((i = 0; i < 10; i++)); do
   if [ "$i" -lt "$filled" ]; then bar+="▓"; else bar+="░"; fi
 done
 
-printf "%s · ${color}%s %s%%${reset} · %sk/%sk\n" \
-  "$model" "$bar" "$pct" "$((used / 1000))" "$((size / 1000))"
+# Plan usage limits (only present for Pro/Max, after the first API response).
+limits=""
+limit_segment() { # <label> <window> <date format>
+  local p r
+  p=$(echo "$input" | jq -r ".rate_limits.$2.used_percentage // empty | floor")
+  [ -z "$p" ] && return
+  r=$(echo "$input" | jq -r ".rate_limits.$2.resets_at // empty")
+  # Show what's left; color still keys off usage so low remaining turns red.
+  limits+=" · $1 $(color_for "$p")$((100 - p))% left${reset}"
+  [ -n "$r" ] && limits+=" ↻$(date -r "$r" "$3")"
+}
+limit_segment 5h five_hour +%H:%M
+limit_segment 7d seven_day +%a
+
+printf "%s · ${color}%s %s%%${reset} · %sk/%sk%b\n" \
+  "$model" "$bar" "$pct" "$((used / 1000))" "$((size / 1000))" "$limits"
