@@ -1,5 +1,23 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "providers": {
+    "cliproxyapi": {
+      "name": "CLIProxyAPI (Claude)",
+      "package": "@opencode/ai/providers/anthropic-compatible",
+      "settings": {
+        "baseURL": "http://127.0.0.1:8317/v1",
+        "apiKey": "{file:~/.config/opencode/cliproxyapi.key}"
+      },
+      "models": {
+        "claude-opus-5-5": {
+          "name": "Claude Opus 5.5"
+        },
+        "claude-sonnet-5-5": {
+          "name": "Claude Sonnet 5.5"
+        }
+      }
+    }
+  },
   "mcp": {
     "tavily": {
       "type": "remote",
