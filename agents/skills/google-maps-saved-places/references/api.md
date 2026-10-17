@@ -279,3 +279,124 @@ separately.
 
 Responses begin with a result code `0`, usually followed by a place URL.
 Read current starred state through a fresh place Save menu or the Starred read.
+
+## Resumable Starred → list helper
+
+Use `scripts/move.js` for bulk moves instead of rebuilding protobuf requests in
+the conversation. Load `protocol.js` first, then `move.js`, through
+`evaluate_script` with `sourcePath` and `format: "script"`.
+
+### Capture templates while moving the first place
+
+```js
+const m = globalThis.googleMapsSavedPlacesMove
+globalThis.moveCapture = m.capture()
+```
+
+Open the destination list to capture `getlist`. Add the first requested place
+through its Save menu. Wait for the addition response and verify destination
+membership, then remove its star. These are real steps of the requested move,
+not disposable test edits. Capture before those steps so their templates are
+available without searching the whole network log afterward.
+
+```js
+globalThis.moveTemplates = moveCapture.stop()
+Object.keys(moveTemplates) // readURL, addURL, unstarURL
+```
+
+Capture observes page fetch and XHR calls. It does not observe worker requests
+or operations performed before capture started. When a key is missing, obtain
+that operation's URL with browser network inspection. Do not redo a successful
+write merely to capture it. Templates remain in memory and retain repeated
+query parameters, operation tokens, and opaque context fields.
+
+### Run the remaining moves
+
+```js
+globalThis.moveJob = m.create({
+  templates: moveTemplates,
+  points: confirmedPoints, // name, lat, lng, optional featureIds
+  storageKey: "maps-move-current-trip",
+})
+await moveJob.run()
+```
+
+Supply only confirmed candidates. Keep feature IDs as decimal strings. Omit
+`featureIds` for coordinate pins. Do not include `note`; restore any retained
+notes through the manual workflow before removing stars. Exclude places already
+fully moved and verified during capture; report those separately from the job.
+
+The helper validates routes, accounts, destination identities, and nested message
+lengths before sending requests. It replaces only the action message and retains
+the captured context and operation token. It uses the complete captured unstar
+template, not a star template. Named-place writes derive exact hexadecimal IDs
+from the decimal pair; coordinate writes contain no feature IDs.
+
+`run()` reads the destination once, skips existing memberships, adds missing
+places, and reads again if it added anything. It refuses incomplete list reads,
+including nonempty continuation cursors or count mismatches. Paginate manually
+or use the UI when the destination cannot be read completely. If an addition is
+not visible in the verification read, it stops without removing stars. Run again
+after a fresh read rather than repeatedly sending additions.
+
+### Verify and report
+
+Without a `readStarred` callback, successful unstar replies increase
+`acknowledged`, not `completed`. Check each affected place's fresh Save menu,
+then record the observation:
+
+```js
+moveJob.report() // total, acknowledged, completed, places
+moveJob.confirmUnstarred(observedIdentity)
+```
+
+Use the exact `identity` from `report().places`. Call `confirmUnstarred` only
+after observing that Starred is unchecked in a fresh menu. A missing marker or
+tag, or absence from a capped search, is not sufficient evidence. Confirmation
+updates the checkpoint. Stop when all affected identities are verified.
+
+When a reliable read is available, pass `readStarred: async point => ...` to
+`create()`. Return `true` for confirmed Starred membership, `false` for confirmed
+nonmembership, or `null` when unknown. The helper calls it after writes and before
+retrying an interrupted unstar. The callback must read current state, not reuse
+pre-move observations. `onProgress: report => ...` optionally receives progress
+after checkpoints; it must not throw.
+
+### Resume after interruption or navigation
+
+```js
+globalThis.moveJob = googleMapsSavedPlacesMove.create({
+  templates: freshTemplates,
+  storageKey: "maps-move-current-trip",
+  readStarred: readCurrentStarredState,
+})
+await moveJob.run()
+```
+
+Reload both scripts after navigation. Omit `points` to restore candidates from
+the checkpoint. Use the same working tab because `sessionStorage` survives its
+navigations, not closing the tab. Before intentionally closing it, retain a
+token-free checkpoint in approved task storage if recovery in another tab is
+needed. Do not close the working tab during a move.
+
+The checkpoint stores destination identity, account index, candidates, and
+per-place progress. It never stores request URLs or tokens. Supply current
+templates after navigation; recover their URLs through network inspection when
+the in-memory capture is gone. Do not reverse completed moves to recapture tokens.
+A different account, destination, or candidate set requires a different
+`storageKey` so an existing job is not overwritten.
+
+On resumption, the helper reads destination membership before deciding whether
+to repeat an addition. An uncertain unstar requires a fresh Starred read. If
+that read returns `null`, the helper pauses rather than blindly repeating the
+write. Confirm removal through a fresh Save menu or provide a reliable callback.
+
+### Local tests
+
+```sh
+node --test agents/skills/google-maps-saved-places/tests/*.test.js
+```
+
+Run from the dotfiles repository root. Tests use synthetic requests and a fake
+Maps backend. They do not access the account or change saved places. Live API
+compatibility still requires a separately authorized check.

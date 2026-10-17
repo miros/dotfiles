@@ -11,7 +11,36 @@ compatibility: Signed-in Google Maps browser MCP with JavaScript execution and n
 
 # Google Maps saved places
 
-## Setup
+## Choose the shortest workflow
+
+- For a handful of identified places, prefer the Save menu. As a starting rule,
+  use it for about ten or fewer places unless API templates are already available.
+  Do not set up bulk requests when clicking the items requires less work.
+- For larger moves, use the API workflow and the bundled move helper below.
+- Use the current Maps tab or one working tab. Do not open a tab per place.
+  Inspect an existing regional view before navigating away from it.
+- Google Maps memberships use this skill, not the Google Workspace connectors.
+
+## Discover once, then move
+
+1. Identify candidates and resolve their country from addresses or coordinates.
+2. When the task includes an entire country, check coverage and flag unresolved
+   identities or territory boundaries before claiming that every place was found.
+3. After confirming candidates, move them without repeating regional discovery.
+   Read another region or zoom only to address a specific coverage gap. Matching
+   counts at several zoom levels do not establish completeness.
+4. Keep discovery limits separate from move results. Report the number of
+   identified places moved; do not call a partial inventory complete.
+
+### Small moves through the UI
+
+For each candidate, open Save, select the destination, and wait for its write
+request to finish. Verify the destination before deselecting Starred. Read the
+menu again to confirm both states. Use `aria-checked`, not menu position, because
+selected entries move to the top. Preserve other selections. Do not initialize
+the API helpers for this workflow.
+
+## API setup
 
 1. Connect to the signed-in Maps tab with Chrome DevTools MCP. Use `take_snapshot`
    for UI elements and `list_network_requests` / `get_network_request` for requests.
@@ -110,6 +139,41 @@ operation tokens. Coordinate bodies omit feature IDs.
 Notes belong to list memberships and require an explicit `updateitem` call.
 Starred does not automatically carry list notes through a round trip. Moves
 recreate memberships and are not atomic; timestamp preservation is unspecified.
+
+### Resumable Starred → list moves
+
+Load [scripts/move.js](scripts/move.js) after `protocol.js`. Access it as
+`globalThis.googleMapsSavedPlacesMove`. Follow the runnable workflow in
+[references/api.md](references/api.md#resumable-starred--list-helper).
+
+- Start `capture()` before the first UI operation. It observes fetch and XHR
+  URLs for list reads, additions, and unstarring. Capture tokens using real steps
+  of the requested move, not changes to an unrelated test place. Verify an
+  addition before performing the first unstar operation. Stop capture afterward.
+- Pass the captured templates and confirmed candidates to `create()`. `run()`
+  skips existing destination memberships, adds missing ones, verifies the full
+  destination, and only then removes stars. It preserves request context.
+- The helper checkpoints candidates and progress in `sessionStorage`. It does
+  not persist tokens or request URLs. After navigation, reload both scripts and
+  supply current templates with the same `storageKey` to resume. Never put
+  account tokens, cookies, or captured URLs in skill files or test fixtures.
+- Treat interrupted writes as uncertain. Read membership before retrying.
+  Without reliable current Starred state, the helper pauses an uncertain unstar.
+- The helper supports Starred → ordinary list only. Restore retained notes
+  separately. Use the documented manual workflow for other move types.
+
+### Verification and progress
+
+Report verified progress, such as `1/5 moved`, while work continues. Distinguish
+acknowledged writes from verified moves. `report().acknowledged` counts successful
+unstar replies; `report().completed` counts places with verified destination and
+unstarred state. Do not claim that every Save menu was checked after checking one.
+
+Map icons can remain stale after API writes, including after a map reload. When
+icons disagree with write results, inspect a freshly loaded place Save menu.
+Do not repeat writes because an icon still shows a star. A capped Starred search
+or missing tile tag does not prove that a place is unstarred. Verify the affected
+identities with a reliable read or their fresh Save menus, then stop checking.
 
 ## UI and request details
 
