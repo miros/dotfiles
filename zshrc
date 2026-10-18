@@ -52,6 +52,7 @@ alias notify_me='terminal-notifier -message "Task Done"'
 
 alias git-amend-f='git add . && git commit --amend --no-edit && git push --force-with-lease'
 alias git-push-branch='git push -u origin HEAD'
+alias git-stats='git diff HEAD --stat'
 
 alias k='kubectl'
 

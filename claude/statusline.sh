@@ -4,7 +4,8 @@ input=$(cat)
 
 model=$(echo "$input" | jq -r '.model.display_name // "?"')
 effort=$(echo "$input" | jq -r '.effort.level // empty')
-[ -n "$effort" ] && model+=" ($effort)"
+# Bold yellow effort level.
+[ -n "$effort" ] && model+=$' (\033[1;38;2;230;219;116m'"$effort"$'\033[0m)'
 model_id=$(echo "$input" | jq -r '.model.id // ""')
 size=$(echo "$input" | jq -r '.context_window.context_window_size // 0')
 used=$(echo "$input" | jq -r '.context_window.current_usage // {} |

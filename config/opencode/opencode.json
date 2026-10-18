@@ -10,7 +10,11 @@
       },
       "models": {
         "claude-opus-5-5": {
-          "name": "Claude Opus 5.5"
+          "name": "Claude Opus 5.5",
+          "limit": {
+            "context": 500000,
+            "output": 128000
+          }
         },
         "claude-sonnet-5-5": {
           "name": "Claude Sonnet 5.5"
