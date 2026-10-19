@@ -1,26 +1,52 @@
 #!/bin/bash
 set -e
 
-# brewtap
-brew tap Homebrew/bundle
-(cd ~/.dotfiles && brew bundle -v)
+DOTFILES="$HOME/.dotfiles"
+
+link() {
+  local source="$DOTFILES/$1"
+  local target="$2"
+
+  if [[ -L "$target" && "$(readlink "$target")" == "$source" ]]; then
+    echo "ok        $target"
+    return
+  fi
+  if [[ -e "$target" && ! -L "$target" ]]; then
+    mv "$target" "$target.backup"
+    echo "backup    $target.backup"
+  fi
+  mkdir -p "$(dirname "$target")"
+  ln -sfn "$source" "$target"
+  echo "linked    $target -> $source"
+}
+
+# homebrew
+if [[ ! -x /opt/homebrew/bin/brew ]]; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+eval "$(/opt/homebrew/bin/brew shellenv)"
+brew bundle --file "$DOTFILES/Brewfile"
 
 # oh-my-zsh
-#(sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)")
+if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+  KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
 
-# link dotfiles
-rcup -U .oh-my-zsh/custom/plugins/pj -U scripts -U bin -x install
+# dotfiles
+for name in zshrc gitconfig gitignore vimrc tmux.conf editorconfig fzf.zsh gemrc irbrc pryrc screenrc hushlogin tool-versions; do
+  link "$name" "$HOME/.$name"
+done
+link agents "$HOME/.agents"
+link oh-my-zsh/custom/plugins/pj "$HOME/.oh-my-zsh/custom/plugins/pj"
 
-# vim
-#git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-#vim +PluginInstall +qall
+# opencode
+bun "$DOTFILES/install/opencode.ts"
 
 # asdf
-asdf plugin add erlang https://github.com/asdf-vm/asdf-erlang.git
-asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
-asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+if ! asdf plugin list 2>/dev/null | grep -qx nodejs; then
+  asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+fi
+(cd "$HOME" && asdf install)
 
 # projects
-mkdir -p $HOME/pjs
-echo 'export PROJECTS=$HOME/pjs' >> ~/.zsh_local
-
+mkdir -p "$HOME/pjs"

@@ -1,3 +1,5 @@
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
@@ -80,7 +82,6 @@ new-wt() {
   cd -- "$dir"
 }
 
-PATH=:/usr/local/bin:$PATH # for homebrew
 PATH=$PATH:$HOME/bin
 
 export GOPATH=$HOME/go
@@ -95,6 +96,9 @@ export ERL_AFLAGS="-kernel shell_history enabled -kernel shell_history_file_byte
 
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.opencode/bin:$PATH"
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+
+export PROJECTS=$HOME/pjs
 
 git-rebase-main() {
   git fetch origin || return

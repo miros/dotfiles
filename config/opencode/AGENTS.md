@@ -6,6 +6,7 @@
 - At the end of the plan list separatly files that you will update and create (one per line). Skip if empty.
 - For any question (not an explicit command) in the build mode, give an answer but do not make changes. Ask for consent to make changes explicitly.
 - If you find yourself in the wrong project path (user started agent at wrong location), stop and notify user.
+- While you work, user and other agents might be working in same folder as well. Do not be alerted and do not alert user about changes. If some of your code was deleted assume that was on purpose.
 
 # Rules for working with code
 
