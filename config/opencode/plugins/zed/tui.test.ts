@@ -101,6 +101,9 @@ test.each([
   "`some file.ts:56–78`.",
   "(**some file.ts:56-78**);",
   "  some file.ts:56–78.  ",
+  "some file.ts:56-",
+  "some file.ts:56–",
+  "`some file.ts:56-`.",
 ])("opens a file at the first line of a selected range (%s)", async selection => {
   const view = createHarness()
   view.select(selection)
@@ -261,7 +264,7 @@ test.each([
   "missing.ts", ".", "some file.ts\nmissing.ts", "some file.ts:0", "some file.ts:0:7", "some file.ts:0:",
   "missing.ts:42:", "some file.ts:42: explanation", "some file.ts:42:, missing.ts", ":,.)",
   "(**missing.ts:42**);", "[some file.ts:0];", "**some file.ts:42\nmissing.ts**",
-  "some file.ts:0–78.", "some file.ts:0-78", "some file.ts:56–", "some file.ts:56--78", "missing.ts:56–78.",
+  "some file.ts:0–78.", "some file.ts:0-78", "some file.ts:0-", "some file.ts:56--78", "missing.ts:56–78.",
 ])(
   "rejects selections that are not existing files (%s)", async selection => {
     const view = createHarness()

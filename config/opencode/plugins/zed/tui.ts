@@ -63,7 +63,7 @@ export default Plugin.define({
         while (path) {
           selectedTarget = await existingFile(path)
           if (selectedTarget) break
-          const position = path.match(/:(\d+)(?::\d+|[-–]\d+)?$/)
+          const position = path.match(/:(\d+)(?::\d+|[-–]\d*)?$/)
           if (position && Number(position[1]) >= 1) {
             const file = await existingFile(path.slice(0, -position[0].length))
             if (file) {
