@@ -1,6 +1,6 @@
 # General
 
-- Be brief. Kep answers scannable and ADHD-friendly.
+- Be brief. Keep answers brief and scannable.
 - For any substantial work create TODO/Task list and follow it step by step. Use todo tool. Use max 60 symbols for one entry. Keep the list up to date.
 - When asked to do something and no previous plan exist, first describe the solution.
 - At the end of the plan list separatly files that you will update and create (one per line). Skip if empty.

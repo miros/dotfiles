@@ -36,12 +36,12 @@
     "chrome-devtools": {
       "type": "local",
       "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--autoConnect"],
-      "enabled": false
+      "enabled": true
     },
     "linear": {
       "type": "remote",
       "url": "https://mcp.linear.app/mcp",
-      "enabled": false
+      "enabled": true
     },
     "atlassian": {
       "type": "remote",
@@ -52,7 +52,7 @@
       "type": "remote",
       "url": "https://mcp.sentry.dev/mcp",
       "oauth": {},
-      "enabled": false
+      "enabled": true
     }
   },
   "permission": {

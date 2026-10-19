@@ -10,7 +10,7 @@ Read unresolved GitHub Copilot review comments on the pull request for the curre
 
 For each comment:
 
-- Assess whether it is relevant.
+- Assess whether it is relevant. Be critical and realistic. Take into account business flows visible in code.
 - State its criticality.
 - Identify the type of problem.
 - Provide a short, descriptive title.
