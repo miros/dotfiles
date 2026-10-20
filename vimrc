@@ -1,49 +1,30 @@
 set shell=bash
 
-set nocompatible              " be iMproved
-filetype off                  " required!
+let mapleader=","
 
-set rtp+=~/.vim/bundle/Vundle.vim/
-call vundle#rc()
+set rtp^=~/.dotfiles/vim
 
-" let Vundle manage Vundle
-" required!
-Bundle 'gmarik/vundle'
+call plug#begin('~/.vim/plugged')
 
 " Lang support
-Plugin 'ingydotnet/yaml-vim'
-Plugin 'motus/pig.vim'
-Plugin 'elixir-lang/vim-elixir'
-Plugin 'fatih/vim-go'
-
-Plugin 'editorconfig/editorconfig-vim'
-
-" Framework support
-
-Plugin 'tpope/vim-rails'
-Plugin 'Keithbsmiley/rspec.vim'
+Plug 'elixir-editors/vim-elixir'
+Plug 'fatih/vim-go'
 
 " Search helpers
-
-Plugin 'dyng/ctrlsf.vim'
-Plugin 'mileszs/ack.vim'
-Plugin 'junegunn/fzf'
-Plugin 'junegunn/fzf.vim'
+Plug 'dyng/ctrlsf.vim'
+Plug 'mileszs/ack.vim'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
 " Common goodies
+Plug 'jlanzarotta/bufexplorer'
+Plug 'preservim/nerdtree'
+Plug 'vim-airline/vim-airline'
 
-Plugin 'corntrace/bufexplorer'
-Plugin 'Xuyuanp/git-nerdtree'
-Plugin 'bling/vim-airline'
-Plugin 'terryma/vim-multiple-cursors'
-" Plugin 'tpope/vim-fugitive'
-Plugin 'tomtom/tcomment_vim'
+call plug#end()
 
-" Custom configs
-Plugin 'miros/vimfiles'
-
-call vundle#end()            " required
-filetype plugin indent on    " required
+packadd! editorconfig
+packadd! comment
 
 if filereadable(glob("~/.vimrc.local"))
     source ~/.vimrc.local

@@ -39,6 +39,13 @@ done
 link agents "$HOME/.agents"
 link oh-my-zsh/custom/plugins/pj "$HOME/.oh-my-zsh/custom/plugins/pj"
 
+# vim
+if [[ ! -f "$HOME/.vim/autoload/plug.vim" ]]; then
+  curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+fi
+vim +PlugInstall +qall
+
 # opencode
 bun "$DOTFILES/install/opencode.ts"
 
