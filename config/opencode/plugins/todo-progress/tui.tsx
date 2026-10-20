@@ -1,16 +1,28 @@
 import { Plugin } from "@opencode/plugin/tui"
-import { createEffect, createSignal, onCleanup, Show } from "solid-js"
-import { TodoRpc } from "../opencode-todo/rpc.js"
+import { createEffect, createMemo, onCleanup, Show } from "solid-js"
 
 type Todo = {
   status: "pending" | "in_progress" | "completed" | "cancelled"
 }
 
-type TodoClient = {
-  list(input: { sessionID: string }): Promise<unknown>
-  events: {
-    on(name: "changed", handler: (event: { data: unknown }) => void): () => void
-  }
+type Message = {
+  id: string
+  type: string
+  content?: ReadonlyArray<{
+    type: string
+    name?: string
+    state?: { status?: string; input?: { todos?: unknown } }
+  }>
+}
+
+function latestTodos(messages: readonly Message[], revertMessageID?: string): Todo[] {
+  const revertIndex = revertMessageID ? messages.findIndex(message => message.id === revertMessageID) : -1
+  const call = messages
+    .slice(0, revertIndex === -1 ? messages.length : revertIndex)
+    .flatMap(message => message.type === "assistant" ? message.content ?? [] : [])
+    .findLast(part => part.type === "tool" && part.name === "todowrite" && part.state?.status === "completed")
+  const todos = call?.state?.input?.todos
+  return Array.isArray(todos) ? todos : []
 }
 
 function formatProgress(todos: readonly Todo[]) {
@@ -22,49 +34,23 @@ function formatProgress(todos: readonly Todo[]) {
 
 function TodoProgress(props: {
   context: Plugin.Context
-  client: TodoClient
   sessionID?: string
   openSidebar: () => void
 }) {
-  const [todos, setTodos] = createSignal<readonly Todo[] | undefined>([])
   let pressedSessionID: string | undefined
 
   createEffect(() => {
-    const sessionID = props.sessionID
+    void props.sessionID
     pressedSessionID = undefined
-    setTodos([])
-    if (!sessionID) return
-
-    let active = true
-    let request = 0
-    const refresh = async () => {
-      const currentRequest = ++request
-      try {
-        const result = await props.client.list({ sessionID }) as { todos: Todo[] }
-        if (active && request === currentRequest) setTodos(result.todos)
-      } catch {
-        if (active && request === currentRequest) setTodos(undefined)
-      }
-    }
-
-    const unsubscribe = props.client.events.on("changed", event => {
-      const data = event.data as { sessionID: string }
-      if (data.sessionID === sessionID) void refresh()
-    })
-    const interval = setInterval(() => void refresh(), 30_000)
-    onCleanup(() => {
-      active = false
-      unsubscribe()
-      clearInterval(interval)
-    })
-    void refresh()
   })
 
-  const label = () => {
-    if (!props.sessionID) return undefined
-    const current = todos()
-    return current === undefined ? undefined : formatProgress(current)
-  }
+  const label = createMemo(() => {
+    const sessionID = props.sessionID
+    if (!sessionID) return undefined
+    const session = props.context.data.session
+    const messages = session.message.list(sessionID) as unknown as Message[]
+    return formatProgress(latestTodos(messages, session.get(sessionID)?.revert?.messageID))
+  })
 
   return (
     <Show when={label()}>
@@ -101,7 +87,6 @@ function TodoProgress(props: {
 export default Plugin.define({
   id: "local.todo-progress.tui",
   setup(context) {
-    const client = context.client.rpc(TodoRpc)
     const visibleSidebars = new Map<string, number>()
     const stopSidebar = context.ui.slot({
       append: "sidebar.content",
@@ -123,7 +108,6 @@ export default Plugin.define({
       render: input => (
         <TodoProgress
           context={context}
-          client={client}
           sessionID={input.sessionID}
           openSidebar={() => {
             if (input.sessionID && !visibleSidebars.has(input.sessionID)) {

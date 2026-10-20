@@ -5,7 +5,12 @@ import { createComponent, createSignal, Show } from "solid-js"
 import plugin from "./tui"
 
 type Todo = { status: "pending" | "in_progress" | "completed" | "cancelled" }
-type Snapshot = { todos: Todo[] }
+type ToolStatus = "running" | "completed" | "error"
+type Message = {
+  id: string
+  type: string
+  content: Array<{ type: string; name: string; state: { status: ToolStatus; input: { todos: Todo[] } } }>
+}
 type Slot = {
   append: string
   render(input: { sessionID?: string; mode: "normal"; showDetails: boolean }): JSX.Element
@@ -16,35 +21,41 @@ afterEach(() => {
   for (const cleanup of cleanups.splice(0).reverse()) cleanup()
 })
 
+let nextMessageID = 0
+function todowrite(todos: Todo[], status: ToolStatus = "completed"): Message {
+  return {
+    id: `message-${++nextMessageID}`,
+    type: "assistant",
+    content: [{ type: "tool", name: "todowrite", state: { status, input: { todos } } }],
+  }
+}
+
 async function createHarness(options: {
   todos?: Todo[]
+  messages?: Record<string, Message[]>
   sessionID?: string
   running?: boolean
   sidebarVisible?: boolean
-  list?: (input: { sessionID: string }) => Promise<Snapshot>
 } = {}) {
-  let todos = options.todos ?? [{ status: "completed" }, { status: "pending" }]
+  const [messages, setMessages] = createSignal<Record<string, Message[]>>(
+    options.messages ?? { "session-a": [todowrite(options.todos ?? [{ status: "completed" }, { status: "pending" }])] },
+  )
+  const [revert, setRevert] = createSignal<Record<string, string | undefined>>({})
   const [sessionID, setSessionID] = createSignal<string | undefined>(options.sessionID ?? "session-a")
   const [running, setRunning] = createSignal(options.running ?? true)
   const [sidebarVisible, setSidebarVisible] = createSignal(options.sidebarVisible ?? false)
-  const handlers = new Set<(event: { data: { sessionID: string } }) => void>()
-  const list = mock(options.list ?? (async () => ({ todos })))
   const slots = new Map<string, Slot>()
   const dispatch = mock(() => setSidebarVisible(value => !value))
   const directoryAction = mock(() => {})
   const unregister = mock(() => {})
-  const rpc = {
-    list,
-    events: {
-      on: (_name: string, handler: (event: { data: { sessionID: string } }) => void) => {
-        handlers.add(handler)
-        return () => { handlers.delete(handler) }
+  const context = {
+    data: {
+      session: {
+        status: () => running() ? "running" : "idle",
+        get: (id: string) => ({ id, revert: revert()[id] ? { messageID: revert()[id] } : undefined }),
+        message: { list: (id: string) => messages()[id] ?? [] },
       },
     },
-  }
-  const context = {
-    client: { rpc: () => rpc },
-    data: { session: { status: () => running() ? "running" : "idle" } },
     theme: { text: { muted: "#888888" } },
     keymap: { dispatch },
     ui: {
@@ -77,21 +88,26 @@ async function createHarness(options: {
   cleanups.push(() => view.renderer.destroy())
   await view.flush()
 
+  const addMessage = (message: Message, id = sessionID()!) => {
+    setMessages(current => ({ ...current, [id]: [...(current[id] ?? []), message] }))
+  }
+
   return {
     ...view,
-    list,
     dispatch,
     directoryAction,
-    handlers,
     unregister,
     sessionID,
     setSessionID,
     setRunning,
     sidebarVisible,
     setSidebarVisible,
+    addMessage,
     changeTodos(next: Todo[], id = sessionID()!) {
-      todos = next
-      for (const handler of handlers) handler({ data: { sessionID: id } })
+      addMessage(todowrite(next), id)
+    },
+    revertTo(messageID: string, id = sessionID()!) {
+      setRevert(current => ({ ...current, [id]: messageID }))
     },
   }
 }
@@ -160,74 +176,64 @@ test("ignores todo changes from other sessions", async () => {
   const view = await createHarness()
   view.changeTodos([{ status: "completed" }], "session-b")
   await view.flush()
-  expect(view.list).toHaveBeenCalledTimes(1)
   expect(view.captureCharFrame()).toContain("todo:1/2")
 })
 
 test("loads the new session's todos when switching sessions", async () => {
   const view = await createHarness({
-    list: async ({ sessionID }) => ({
-      todos: sessionID === "session-a" ? [{ status: "pending" }] : [{ status: "completed" }],
-    }),
-  })
-  expect(view.captureCharFrame()).toContain("todo:0/1")
-  view.setSessionID("session-b")
-  await view.flush()
-  expect(view.captureCharFrame()).toContain("todo:1/1")
-  expect(view.handlers.size).toBe(1)
-})
-
-test("does not show a previous session's delayed response", async () => {
-  const previous = Promise.withResolvers<Snapshot>()
-  const view = await createHarness({
-    list: ({ sessionID }) => sessionID === "session-a"
-      ? previous.promise
-      : Promise.resolve({ todos: [{ status: "pending" }] }),
-  })
-  view.setSessionID("session-b")
-  await view.flush()
-  previous.resolve({ todos: [{ status: "completed" }] })
-  await view.flush()
-  expect(view.captureCharFrame()).toContain("todo:0/1")
-})
-
-test("does not replace newer todos with a delayed response", async () => {
-  const initial = Promise.withResolvers<Snapshot>()
-  let calls = 0
-  const view = await createHarness({
-    list: () => ++calls === 1
-      ? initial.promise
-      : Promise.resolve({ todos: [{ status: "completed" }] }),
-  })
-  view.changeTodos([])
-  await view.flush()
-  initial.resolve({ todos: [{ status: "pending" }] })
-  await view.flush()
-  expect(view.captureCharFrame()).toContain("todo:1/1")
-})
-
-test("hides the counter when the todo service fails and recovers on a change", async () => {
-  let fail = true
-  const view = await createHarness({
-    list: async () => {
-      if (fail) throw new Error("Todo service unavailable")
-      return { todos: [{ status: "completed" }] }
+    messages: {
+      "session-a": [todowrite([{ status: "pending" }])],
+      "session-b": [todowrite([{ status: "completed" }])],
     },
   })
-  expect(view.captureCharFrame()).not.toContain("todo:")
-  fail = false
-  view.changeTodos([])
+  expect(view.captureCharFrame()).toContain("todo:0/1")
+  view.setSessionID("session-b")
   await view.flush()
   expect(view.captureCharFrame()).toContain("todo:1/1")
 })
 
-test("does not load todos without a session", async () => {
+test("uses the latest completed todowrite call", async () => {
+  const view = await createHarness({
+    messages: {
+      "session-a": [
+        todowrite([{ status: "pending" }]),
+        todowrite([{ status: "completed" }, { status: "completed" }, { status: "pending" }]),
+      ],
+    },
+  })
+  expect(view.captureCharFrame()).toContain("todo:2/3")
+})
+
+test("ignores todowrite calls that have not completed", async () => {
+  const view = await createHarness()
+  view.addMessage(todowrite([{ status: "completed" }], "running"))
+  view.addMessage(todowrite([{ status: "pending" }], "error"))
+  await view.flush()
+  expect(view.captureCharFrame()).toContain("todo:1/2")
+})
+
+test("ignores todowrite calls after the revert point", async () => {
+  const reverted = todowrite([{ status: "completed" }])
+  const view = await createHarness()
+  view.addMessage(reverted)
+  view.addMessage(todowrite([{ status: "completed" }, { status: "completed" }]))
+  await view.flush()
+  expect(view.captureCharFrame()).toContain("todo:2/2")
+  view.revertTo(reverted.id)
+  await view.flush()
+  expect(view.captureCharFrame()).toContain("todo:1/2")
+})
+
+test("shows todo:[] when the session has no todowrite calls", async () => {
+  const view = await createHarness({ messages: { "session-a": [] } })
+  expect(view.captureCharFrame()).toContain("todo:[]")
+})
+
+test("hides the counter without a session", async () => {
   const view = await createHarness()
   view.setSessionID(undefined)
   await view.flush()
-  expect(view.list).toHaveBeenCalledTimes(1)
   expect(view.captureCharFrame()).not.toContain("todo:")
-  expect(view.handlers.size).toBe(0)
 })
 
 test("clicking the counter opens a hidden sidebar", async () => {
@@ -301,11 +307,4 @@ test("right-clicking the counter does not open the sidebar", async () => {
   const view = await createHarness()
   await view.mockMouse.click(2, 0, 2)
   expect(view.dispatch).not.toHaveBeenCalled()
-})
-
-test("unmounting the footer removes its todo subscription", async () => {
-  const view = await createHarness()
-  expect(view.handlers.size).toBe(1)
-  view.renderer.destroy()
-  expect(view.handlers.size).toBe(0)
 })
