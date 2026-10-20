@@ -14,7 +14,9 @@ For each comment:
 - State its criticality.
 - Identify the type of problem.
 - Provide a short, descriptive title.
-- Explain the problem in 1-3 sentences.
+- Explain the problem at conceptual in 3 sentences.
+- Suggest solution at conceptual level in 3 sentences.
+- Recommended action in 1 sentence.
 
 ## Output format
 
@@ -36,6 +38,9 @@ These examples are illustrative. Use the actual findings and locations.
 - **Location:** `src/api/orders.ts:42`
 **Explanation:**
 The endpoint loads an order by ID without checking its owner. An authenticated user could access another user's order.
+**Solution:**
+Some soultion.
+**Recommended action:** Some action.
 
 ### 2. Null check already exists
 
@@ -45,3 +50,6 @@ The endpoint loads an order by ID without checking its owner. An authenticated u
 - **Location:** `src/services/orders.ts:18`
 **Explanation:**
 Copilot reports a possible null access. The preceding guard already returns when the order is null.
+**Solution:**
+Some soultion.
+**Recommended action:** Some action.
