@@ -11,7 +11,6 @@
 # Rules for working with code
 
 - Do not add features, refactoring, or improvements beyond what was requested.
-- When you explain or show some existing code always include relative path to file with line numbers.
 - If running your current task requires Docker and it is not running, just start it (might be colima).
 - When adding new env variables to `.env` — update `.env.example`.
 
