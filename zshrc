@@ -71,11 +71,6 @@ alias claude='claude --settings $HOME/.dotfiles/claude/settings.json'
 alias oc='opencode'
 alias ai-costs-today='npx -y codeburn@latest audit -p today --provider opencode'
 
-oc-plan() {
-  OPENCODE_CONFIG_CONTENT='{"plugin":[["@plannotator/opencode@latest",{"workflow":"plan-agent"}]]}' \
-    command opencode "$@"
-}
-
 new-wt() {
   local dir
   dir="$("$HOME/.dotfiles/bin/new-wt" "$@")" || return

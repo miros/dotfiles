@@ -68,10 +68,4 @@
   "experimental": {
     "todo": true
   },
-  "plugin": [
-    ["@plannotator/opencode@latest", {
-      "workflow": "manual"
-    }
-  ]
-  ],
 }
