@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+
+git add -A
+
+files="$(git diff --cached --name-only --no-renames)"
+if [[ -z "$files" ]]; then
+  printf 'Nothing to commit\n'
+  exit 0
+fi
+
+message="update $(printf '%s\n' "$files" | paste -sd ',' - | sed 's/,/, /g')"
+git commit -m "$message"
+
+if git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' >/dev/null 2>&1; then
+  git push
+else
+  git push -u origin HEAD
+fi
