@@ -77,7 +77,7 @@ new-wt() {
   cd -- "$dir"
 }
 
-PATH=$PATH:$HOME/bin
+PATH=$PATH:$HOME/bin:$HOME/.dotfiles/bin
 
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin

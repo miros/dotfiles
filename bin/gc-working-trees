@@ -1,0 +1,170 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+stale_days=30
+
+usage() {
+  printf 'usage: %s [--remove]\n' "$(basename "$0")" >&2
+  exit 1
+}
+
+default_target() {
+  local remote ref
+
+  if git remote | grep -qx origin; then
+    remote=origin
+  elif [[ "$(git remote | wc -l | tr -d ' ')" == 1 ]]; then
+    remote="$(git remote)"
+  else
+    return 0
+  fi
+
+  ref="$(git ls-remote --symref -- "$remote" HEAD |
+    awk '$1 == "ref:" && $3 == "HEAD" { print $2 }')"
+
+  if [[ "$ref" == refs/heads/* ]] &&
+    git show-ref --verify --quiet "refs/remotes/$remote/${ref#refs/heads/}"; then
+    printf 'refs/remotes/%s/%s\n' "$remote" "${ref#refs/heads/}"
+  fi
+}
+
+real_path() {
+  (cd "$1" 2>/dev/null && pwd -P) || printf '%s\n' "$1"
+}
+
+removal_reason() {
+  local branch="$1" upstream track last_commit
+
+  upstream="$(git for-each-ref --format='%(upstream)' "refs/heads/$branch")"
+  track="$(git for-each-ref --format='%(upstream:track)' "refs/heads/$branch")"
+
+  if [[ -n "$upstream" && "$track" == "[gone]" ]]; then
+    printf 'upstream gone\n'
+    return
+  fi
+
+  if [[ -n "$target" && -n "$upstream" && "$upstream" != "$target" ]] &&
+    git merge-base --is-ancestor "refs/heads/$branch" "$target"; then
+    printf 'merged\n'
+    return
+  fi
+
+  last_commit="$(git log -1 --format=%ct "refs/heads/$branch")"
+  if [[ -n "$upstream" ]] &&
+    (( last_commit < $(date +%s) - stale_days * 86400 )) &&
+    [[ "$(git rev-list --count "$upstream..refs/heads/$branch")" == 0 ]]; then
+    printf 'stale\n'
+  fi
+}
+
+keep() {
+  if [[ -n "$1" ]]; then
+    printf '[%d/%d] %s: keep (%s)\n' "$index" "$total" "$label" "$1" >&2
+  else
+    printf '[%d/%d] %s: keep\n' "$index" "$total" "$label" >&2
+  fi
+}
+
+handle_worktree() {
+  local dir="$1" branch="$2" locked="$3" label reason
+
+  [[ -n "$dir" ]] || return 0
+  index=$((index + 1))
+  label="${branch:-$(basename "$dir")}"
+
+  if [[ "$(real_path "$dir")" == "$main_dir" ]]; then keep main; return 0; fi
+  if [[ "$(real_path "$dir")" == "$current_dir" ]]; then keep current; return 0; fi
+  if [[ "$locked" == true ]]; then keep locked; return 0; fi
+  if [[ -z "$branch" ]]; then keep detached; return 0; fi
+  if [[ ! -d "$dir" ]]; then keep missing; return 0; fi
+  if [[ -n "$(git -C "$dir" status --porcelain --untracked-files=normal)" ]]; then
+    keep dirty
+    return 0
+  fi
+
+  reason="$(removal_reason "$branch")"
+  if [[ -z "$reason" ]]; then keep ""; return 0; fi
+
+  printf '[%d/%d] %s: %s\n' "$index" "$total" "$label" "$reason" >&2
+  candidates+="$dir"$'\t'"$branch"$'\n'
+
+  case "$reason" in
+    "upstream gone") gone+="- $branch"$'\n' ;;
+    merged) merged+="- $branch"$'\n' ;;
+    stale) stale+="- $branch"$'\n' ;;
+  esac
+}
+
+remove_candidates() {
+  printf 'Removing worktrees...\n' >&2
+  if ! printf '%s' "$candidates" | cut -f1 | tr '\n' '\0' |
+    xargs -0 -P 4 -n 1 sh -c 'rm -rf "$1" && printf "removed %s\n" "$1" >&2' _; then
+    git worktree prune
+    printf 'Failed to remove some worktrees.\n' >&2
+    exit 1
+  fi
+  git worktree prune
+}
+
+print_group() {
+  if [[ -n "$2" ]]; then
+    printf '%s:\n%s\n' "$1" "$2"
+  fi
+}
+
+apply=false
+if [[ $# -eq 1 && "$1" == --remove ]]; then
+  apply=true
+elif [[ $# -ne 0 ]]; then
+  usage
+fi
+
+current_dir="$(real_path "$(git rev-parse --show-toplevel)")"
+cd "$current_dir"
+
+printf 'Fetching remotes...\n' >&2
+git fetch --all --prune >&2
+git worktree prune
+
+target="$(default_target)"
+
+worktrees="$(git worktree list --porcelain)"
+main_dir="$(real_path "$(printf '%s\n' "$worktrees" | awk '/^worktree / { sub(/^worktree /, ""); print; exit }')")"
+total="$(printf '%s\n' "$worktrees" | grep -c '^worktree ')"
+
+printf 'Checking worktrees...\n' >&2
+index=0
+candidates="" gone="" merged="" stale=""
+dir="" branch="" locked=false
+while IFS= read -r line; do
+  case "$line" in
+    "worktree "*) dir="${line#worktree }" ;;
+    "branch refs/heads/"*) branch="${line#branch refs/heads/}" ;;
+    locked|"locked "*) locked=true ;;
+    "")
+      handle_worktree "$dir" "$branch" "$locked"
+      dir="" branch="" locked=false
+      ;;
+  esac
+done <<< "$worktrees"
+handle_worktree "$dir" "$branch" "$locked"
+
+if [[ -z "$candidates" ]]; then
+  printf 'Nothing to remove.\n'
+  exit 0
+fi
+
+if [[ "$apply" == true ]]; then
+  remove_candidates
+  printf '\nRemoved worktrees.\n\n'
+else
+  printf '\nWould remove worktrees.\n\n'
+fi
+
+print_group "upstream gone" "$gone"
+print_group "merged" "$merged"
+print_group "stale" "$stale"
+
+if [[ "$apply" == false ]]; then
+  printf 'Dry run. Pass --remove to remove.\n' >&2
+fi
