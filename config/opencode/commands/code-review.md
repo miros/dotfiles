@@ -14,10 +14,9 @@ Focus on:
 - Long comments that are difficult for humans to read.
 - Problems in tests:
   - Are important cases missing?
-  - Are there tautological tests?
+  - Are there tautological tests (too coupled to implementation)? 
   - Can anything be simplified?
   - Are helper usages missing?
-
 - Present findings. State their criticality and order them by importance.
 - Be brief. Use Engineering Writing rules from AGENTS.md.
 - Use at most three sentences per finding.
