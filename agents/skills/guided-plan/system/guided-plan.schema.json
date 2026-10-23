@@ -1,0 +1,1623 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/plannotator/guides/blob/main/skills/guided-plan/system/guided-plan.schema.json",
+  "title": "Guided plan content file (guided-plan/2)",
+  "description": "The shape of plan.json. build.mjs checks more than this: cites that exist, numbers inside cited quotes, jargon, ids that do not collide, paths inside the plan folder, and text that fits.",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "guided-plan/2"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10000,
+      "pattern": "\\S"
+    },
+    "intent": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10000,
+      "pattern": "\\S"
+    },
+    "intentCites": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10000,
+        "pattern": "\\S"
+      },
+      "maxItems": 100
+    },
+    "plan": {
+      "$ref": "#/$defs/planName"
+    },
+    "model": {
+      "type": "string",
+      "maxLength": 10000
+    },
+    "audience": {
+      "enum": [
+        "engineering",
+        "business"
+      ]
+    },
+    "base": {
+      "type": "string",
+      "maxLength": 10000,
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "repos": {
+      "type": "object",
+      "maxProperties": 20,
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$",
+        "not": {
+          "enum": [
+            "__proto__",
+            "constructor",
+            "prototype"
+          ]
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/repo"
+      }
+    },
+    "sources": {
+      "type": "object",
+      "maxProperties": 500,
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$",
+        "not": {
+          "enum": [
+            "__proto__",
+            "constructor",
+            "prototype"
+          ]
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "assets": {
+      "type": "object",
+      "maxProperties": 100,
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$",
+        "not": {
+          "enum": [
+            "__proto__",
+            "constructor",
+            "prototype"
+          ]
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/asset"
+      }
+    },
+    "overview": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/overview"
+      },
+      "minItems": 1,
+      "maxItems": 50
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/section"
+      },
+      "minItems": 1,
+      "maxItems": 10
+    },
+    "ban": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10000,
+        "pattern": "\\S"
+      },
+      "maxItems": 200
+    }
+  },
+  "required": [
+    "format",
+    "title",
+    "intent",
+    "base",
+    "sources",
+    "overview",
+    "sections"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "planName": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 10000
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "repo": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "maxLength": 10000,
+          "pattern": "^https://[^\\s\"<>]+$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "git",
+            "file",
+            "capture"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "lines": {
+          "type": "string",
+          "maxLength": 10000,
+          "pattern": "^[1-9][0-9]*(-[1-9][0-9]*)?$"
+        },
+        "quote": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 10000,
+              "pattern": "\\S"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 10000,
+                "pattern": "\\S"
+              },
+              "minItems": 1,
+              "maxItems": 50
+            }
+          ]
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "at": {
+          "type": "string",
+          "maxLength": 10000,
+          "pattern": "^[0-9a-f]{7,40}$"
+        },
+        "repo": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "kind",
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "asset": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "from": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "file"
+      ],
+      "additionalProperties": false
+    },
+    "overview": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "Decided",
+            "Change",
+            "Kept",
+            "Open",
+            "Ask"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "recommended": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "kind",
+        "text",
+        "section",
+        "cites"
+      ],
+      "additionalProperties": false
+    },
+    "section": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 10000,
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "heading": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "lead": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "figure": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/figure"
+            },
+            {
+              "required": [
+                "title",
+                "cites"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/card"
+          },
+          "maxItems": 6
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/file"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "heading",
+        "lead",
+        "cites",
+        "figure"
+      ],
+      "additionalProperties": false
+    },
+    "card": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 10000,
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "body": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "figure": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/figure"
+            },
+            {
+              "required": [
+                "title",
+                "cites"
+              ]
+            }
+          ]
+        },
+        "fold": {
+          "type": "boolean"
+        },
+        "wide": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "body",
+        "cites"
+      ],
+      "additionalProperties": false
+    },
+    "file": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 10000,
+              "pattern": "\\S"
+            },
+            {
+              "const": true
+            }
+          ]
+        },
+        "at": {
+          "type": "string",
+          "maxLength": 10000,
+          "pattern": "^[0-9a-f]{7,40}$"
+        },
+        "card": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "tag": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "tagAcc": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "screenshot": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "screenshot"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "maxItems": 100
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "asset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "alt": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "ring": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "scale": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "type",
+        "asset"
+      ],
+      "additionalProperties": false
+    },
+    "code": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "code"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "maxItems": 100
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "start": {
+          "type": "integer"
+        },
+        "text": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 10000
+          },
+          "minItems": 1,
+          "maxItems": 40
+        },
+        "at": {
+          "type": "string",
+          "maxLength": 10000,
+          "pattern": "^[0-9a-f]{7,40}$"
+        },
+        "repo": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "marked": {
+          "anyOf": [
+            {
+              "const": "all"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "maxItems": 40
+            }
+          ]
+        },
+        "mark": {
+          "enum": [
+            "hl",
+            "out"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "path",
+        "start",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "list": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "list"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "maxItems": 100
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/listRow"
+          },
+          "minItems": 1,
+          "maxItems": 12
+        }
+      },
+      "required": [
+        "type",
+        "rows"
+      ],
+      "additionalProperties": false
+    },
+    "listRow": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "tag": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "tagAcc": {
+          "type": "boolean"
+        },
+        "mono": {
+          "type": "boolean"
+        },
+        "mark": {
+          "enum": [
+            "out",
+            "new",
+            "acc"
+          ]
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "table": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "table"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "maxItems": 100
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 10000,
+                "pattern": "\\S"
+              },
+              {
+                "$ref": "#/$defs/column"
+              }
+            ]
+          },
+          "minItems": 2,
+          "maxItems": 5
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 10000
+                },
+                {
+                  "$ref": "#/$defs/cell"
+                }
+              ]
+            },
+            "maxItems": 5
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "type",
+        "columns",
+        "rows"
+      ],
+      "additionalProperties": false
+    },
+    "column": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "mono": {
+          "type": "boolean"
+        },
+        "acc": {
+          "type": "boolean"
+        },
+        "end": {
+          "type": "boolean"
+        },
+        "fill": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "cell": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "mono": {
+          "type": "boolean"
+        },
+        "acc": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "chips": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "chips"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "maxItems": 100
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "chips": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/chip"
+          },
+          "minItems": 1,
+          "maxItems": 40
+        },
+        "legend": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/legend"
+          },
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "type",
+        "chips"
+      ],
+      "additionalProperties": false
+    },
+    "chip": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "mark": {
+          "enum": [
+            "out",
+            "changed",
+            "new",
+            "acc"
+          ]
+        },
+        "acc": {
+          "type": "boolean"
+        },
+        "mono": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "legend": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "mark": {
+          "enum": [
+            "out",
+            "changed",
+            "new",
+            "acc"
+          ]
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "timeline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "timeline"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "maxItems": 100
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "stops": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stop"
+          },
+          "minItems": 1,
+          "maxItems": 6
+        },
+        "bands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/band"
+          },
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "type",
+        "stops"
+      ],
+      "additionalProperties": false
+    },
+    "stop": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "sub": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "sub2": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "mark": {
+          "enum": [
+            "acc",
+            "ask"
+          ]
+        },
+        "mono": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "band": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "integer"
+        },
+        "to": {
+          "type": "integer"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "acc": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "from",
+        "to",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "flow": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "flow"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "maxItems": 100
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/step"
+          },
+          "minItems": 2,
+          "maxItems": 6
+        }
+      },
+      "required": [
+        "type",
+        "steps"
+      ],
+      "additionalProperties": false
+    },
+    "step": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "sub": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "via": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "mark": {
+          "enum": [
+            "plain",
+            "acc",
+            "new",
+            "gone",
+            "muted"
+          ]
+        },
+        "mono": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "layers": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "layers"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "maxItems": 100
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/layer"
+          },
+          "minItems": 1,
+          "maxItems": 5
+        }
+      },
+      "required": [
+        "type",
+        "rows"
+      ],
+      "additionalProperties": false
+    },
+    "layer": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "sub": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 10000,
+                "pattern": "\\S"
+              },
+              {
+                "$ref": "#/$defs/layerItem"
+              }
+            ]
+          },
+          "maxItems": 40
+        },
+        "tag": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "tagAcc": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "layerItem": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "mark": {
+          "enum": [
+            "out",
+            "changed",
+            "new",
+            "acc"
+          ]
+        },
+        "mono": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "pair": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "pair"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "maxItems": 100
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "sides": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/side"
+          },
+          "minItems": 2,
+          "maxItems": 4
+        }
+      },
+      "required": [
+        "type",
+        "sides"
+      ],
+      "additionalProperties": false
+    },
+    "screen": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "screen"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "maxItems": 100
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "address": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "parts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/screenPart"
+          },
+          "minItems": 1,
+          "maxItems": 40
+        }
+      },
+      "required": [
+        "type",
+        "parts"
+      ],
+      "additionalProperties": false
+    },
+    "screenPart": {
+      "type": "object",
+      "properties": {
+        "as": {
+          "enum": [
+            "heading",
+            "text",
+            "box",
+            "button",
+            "message",
+            "status",
+            "menu",
+            "card"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "by": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "pin": {
+          "type": "boolean"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "mark": {
+          "enum": [
+            "new",
+            "changed",
+            "out",
+            "acc"
+          ]
+        },
+        "parts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/cardPart"
+          },
+          "minItems": 1,
+          "maxItems": 40
+        }
+      },
+      "required": [
+        "as"
+      ],
+      "additionalProperties": false
+    },
+    "cardPart": {
+      "type": "object",
+      "properties": {
+        "as": {
+          "enum": [
+            "heading",
+            "text",
+            "box",
+            "button",
+            "message",
+            "status",
+            "menu"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "by": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "pin": {
+          "type": "boolean"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "mark": {
+          "enum": [
+            "new",
+            "changed",
+            "out",
+            "acc"
+          ]
+        }
+      },
+      "required": [
+        "as"
+      ],
+      "additionalProperties": false
+    },
+    "lanes": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "lanes"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "cites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "maxItems": 100
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "lanes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "pattern": "\\S"
+          },
+          "minItems": 2,
+          "maxItems": 5
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/laneStep"
+          },
+          "minItems": 2,
+          "maxItems": 12
+        }
+      },
+      "required": [
+        "type",
+        "lanes",
+        "steps"
+      ],
+      "additionalProperties": false
+    },
+    "laneStep": {
+      "type": "object",
+      "properties": {
+        "lane": {
+          "type": "integer"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "mark": {
+          "enum": [
+            "acc",
+            "new"
+          ]
+        }
+      },
+      "required": [
+        "lane",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "side": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10000,
+          "pattern": "\\S"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "acc": {
+          "type": "boolean"
+        },
+        "toy": {
+          "type": "boolean"
+        },
+        "figure": {
+          "$ref": "#/$defs/sideFigure"
+        },
+        "caption": {
+          "type": "string",
+          "maxLength": 10000
+        }
+      },
+      "required": [
+        "label",
+        "figure"
+      ],
+      "additionalProperties": false
+    },
+    "figure": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/screenshot"
+        },
+        {
+          "$ref": "#/$defs/code"
+        },
+        {
+          "$ref": "#/$defs/list"
+        },
+        {
+          "$ref": "#/$defs/table"
+        },
+        {
+          "$ref": "#/$defs/chips"
+        },
+        {
+          "$ref": "#/$defs/timeline"
+        },
+        {
+          "$ref": "#/$defs/flow"
+        },
+        {
+          "$ref": "#/$defs/layers"
+        },
+        {
+          "$ref": "#/$defs/pair"
+        },
+        {
+          "$ref": "#/$defs/screen"
+        },
+        {
+          "$ref": "#/$defs/lanes"
+        }
+      ]
+    },
+    "sideFigure": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/screenshot"
+        },
+        {
+          "$ref": "#/$defs/code"
+        },
+        {
+          "$ref": "#/$defs/list"
+        },
+        {
+          "$ref": "#/$defs/table"
+        },
+        {
+          "$ref": "#/$defs/chips"
+        },
+        {
+          "$ref": "#/$defs/timeline"
+        },
+        {
+          "$ref": "#/$defs/flow"
+        },
+        {
+          "$ref": "#/$defs/layers"
+        },
+        {
+          "$ref": "#/$defs/screen"
+        },
+        {
+          "$ref": "#/$defs/lanes"
+        }
+      ]
+    }
+  }
+}
