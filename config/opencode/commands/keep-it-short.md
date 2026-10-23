@@ -1,5 +1,5 @@
 ---
-description: Keep it short
+description: keep the last response short
 ---
 
-Keep it short
+Keep the last response short. Follow "Engineering Writing".
