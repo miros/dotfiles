@@ -21,6 +21,7 @@ Also report:
 - Options and config that nothing sets.
 - New dependencies added for code that takes a few lines.
 - Near-copies that must change together.
+- Duplicated code that can be dried.
 - Comments that repeat the code or run longer than three sentences.
 - Tests that repeat the implementation instead of checking behavior.
 - Test setup that an existing helper or fixture already does.
