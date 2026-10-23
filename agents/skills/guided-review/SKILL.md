@@ -6,6 +6,9 @@ description: >
   for a guide, walkthrough, tour, or explainer of a diff, branch, PR, or commit, or wants a
   shareable review guide. For a plan of a change that is not made yet, use guided-plan.
   Needs git and the plannotator CLI.
+disable-model-invocation: true
+metadata:
+  opencode/autoinvoke: false
 ---
 
 # Guided Review

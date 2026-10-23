@@ -9,6 +9,9 @@ description: >
   Also writes the guided plan for business stakeholders who shape the product (mock-ups of what
   people will see, who does what, the decisions asked of them) when asked for one. Needs Node 18+
   and git.
+disable-model-invocation: true
+metadata:
+  opencode/autoinvoke: false
 ---
 
 # Guided Plan
