@@ -38,6 +38,23 @@ test("rejects templates for other layers", () => {
   assert.throws(() => tiles.withTiles(url, [[10, 0, 0]]), /only the psm layer/)
 })
 
+test("builds a sessionless one-tile template from captured tile URLs", () => {
+  const captured = new URL(tiles.withTiles(template, [[10, 1, 1], [10, 2, 2]]))
+  const session = Buffer.from("da0103616263", "hex")
+  const payload = Buffer.concat([Buffer.from(captured.searchParams.get("bpb"), "base64url"), session])
+  captured.searchParams.set("bpb", payload.toString("base64url"))
+  captured.searchParams.set("authuser", "5")
+  const otherLayer = new URL(template)
+  otherLayer.searchParams.set("bpb", "Cg0KCAgKEIAEGIAEyAEAEgcIAhIDcHNtEg0IAhIJbG9yZS1wMTNu")
+  const truncated = template.slice(0, 80)
+  const result = tiles.templateFrom(["https://www.google.com/maps", truncated, otherLayer.href, captured.href])
+  assert.equal(result, tiles.withTiles(template, [[10, 1, 1]]))
+})
+
+test("refuses captured URLs without a saved-marker request", () => {
+  assert.throws(() => tiles.templateFrom(["https://www.google.com/maps"]), /No psm-only/)
+})
+
 test("decodes explicit Starred tags", () => {
   const decoded = tiles.decodeResponse(response)
   assert.deepEqual(decoded.map(tile => tile.tile), [[10, 512, 512], [10, 513, 512]])
@@ -123,6 +140,11 @@ test("reads saved markers with the built-in template and reports missing tiles",
   assert.deepEqual(tiles.layers(requested[0].href), ["psm"])
   assert.deepEqual(result.missing, [[10, 514, 512]])
   assert.equal(result.markers.length, 3)
+})
+
+test("reports an expired template when tile reads return HTTP 410", async () => {
+  const fetch = async () => ({ ok: false, status: 410 })
+  await assert.rejects(tiles.savedMarkers([[10, 0, 0]], { fetch, params: { authuser: "0" } }), /template expired/)
 })
 
 test("loads as a browser script without CommonJS", () => {

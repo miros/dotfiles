@@ -29,7 +29,8 @@ function body(data) {
 }
 
 // Fake Maps backend. Place reads return the state from `lag` reads ago.
-function backend({ starred = [], members = {}, stubs = [], lag = 0, fail } = {}) {
+// `aliases` maps a short tile-marker ID to the place's own ID.
+function backend({ starred = [], members = {}, stubs = [], aliases = {}, lag = 0, fail } = {}) {
   const places = new Map()
   const state = hex => {
     if (!places.has(hex)) places.set(hex, { starred: starred.includes(hex), lists: new Set(members[hex] ?? []), history: [] })
@@ -51,11 +52,13 @@ function backend({ starred = [], members = {}, stubs = [], lag = 0, fail } = {})
     const list = pb.match(/^!1m\d+!1s(LIST_\w+)/)?.[1]
     if (url.pathname === fail) return { ok: false, status: 400, text: async () => "" }
     if (url.pathname === "/maps/preview/place") {
-      const shown = state(hex).history.shift() ?? snapshot(hex)
+      const id = aliases[hex] ?? hex
+      const shown = state(id).history.shift() ?? snapshot(id)
       const rows = shown.lists.map(id => [[[3, id], "List"], "ITEM"])
       if (shown.starred) rows.push([[[4], "Starred"], "STARRED"])
       const record = []
       if (stubs.includes(hex)) return body([null, null, null, null, null, null, [null, null]])
+      record[10] = id
       record[243] = "CC"
       record[9] = [null, null, 1.5, 2.5]
       record[18] = "Name, Region 6452, Country"
@@ -170,6 +173,16 @@ test("reads place memberships including Starred", async () => {
   assert.equal(state.countryCode, "CC")
   assert.deepEqual([state.lat, state.lng], [1.5, 2.5])
   assert.deepEqual(state.featureIds, named.featureIds)
+})
+
+test("unstars places found by a short tile-marker ID through the place's own ID", async () => {
+  const short = "0x0:0x71d99965f331d603"
+  const b = backend({ starred: [hex], aliases: { [short]: hex } })
+  const maps = b.connect()
+  const state = await maps.place(short)
+  assert.deepEqual(state.featureIds, named.featureIds)
+  await maps.setStarred(state, false)
+  assert.equal((await maps.place(short)).starred, false)
 })
 
 test("converts feature IDs between hex and exact decimal", () => {

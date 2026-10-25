@@ -155,6 +155,26 @@
     return parsed.url.toString()
   }
 
+  const sessionField = 27
+
+  function templateFrom(urls) {
+    const found = urls.map(url => {
+      try { return request(url) } catch { return null }
+    }).find(parsed => parsed && layerNames(parsed.items).join() === "psm")
+    if (!found) throw new Error("No psm-only /maps/vt/proto request among the captured URLs")
+    let tileSeen = false
+    const items = found.items.filter(item => {
+      if (item.number === sessionField) return false
+      if (item.number !== 1 || item.wire !== 2) return true
+      if (tileSeen) return false
+      tileSeen = true
+      return true
+    })
+    const url = new URL("https://www.google.com/maps/vt/proto?authuser=0")
+    url.searchParams.set("bpb", base64url(encode(items)))
+    return url.toString()
+  }
+
   function featureId(metadata) {
     const id = text(message(message(metadata, 20), 1), 1)
     if (id && /^0x[0-9a-f]+:0x[0-9a-f]+$/i.test(id)) {
@@ -216,12 +236,12 @@
     return result
   }
 
-  // psm request from Maps build 20261013 with its session-ID field (27) removed.
+  // psm request from Maps build 20261020, produced by templateFrom.
   const savedMarkersTemplate = "https://www.google.com/maps/vt/proto?authuser=0&bpb=" +
-    "CgsKBggFEBkYC8oBABIYCAISA3BzbSIHCgJzcBIBMYrI790PAhABGiISAnJ1GgJkZSjRCGISCEQSDgoDc2V0EgdSb2FkbWFwoAEBIAEyLwgM" +
-    "EAIwADgBQAKIAQHgAQaAAgG4AgHIAgHYAgHoAgGQAwHgAwGaBAQIARAByAUBogEGGAEwAXgBugFmzsVT0cVTsqxUut2oApW6thbpkrsi6pK7" +
-    "IuySuyK_iMwivfT4LNifgjDt84UwzsVT0cVTut2oAu6f7wSyrFSl_rcWlbq2FumSuyLqkrsi7JK7Ir30-CzAhN8i7fOFMKOpiDC_iMwi4AGf" +
-    "BoACAQ"
+    "Cg0KCAgMENkaGIcNygEAEhgIAhIDcHNtIgcKAnNwEgExisjv3Q8CEAEaIhICcnUaAmRlKNEIYhIIRBIOCgNzZXQSB1JvYWRtYXCgAQEgATIv" +
+    "CAwQAjAAOAFAAogBAeABBoACAbgCAcgCAdgCAegCAZADAeADAZoEBAgBEAHIBQGiAQYYATABeAG6AWbOxVPRxVOyrFS63agClbq2FumSuyLq" +
+    "krsi7JK7Ir-IzCK99Pgs2J-CMO3zhTDOxVPRxVO63agC7p_vBLKsVKX-txaVurYW6ZK7IuqSuyLskrsivfT4LMCE3yLt84Uwo6mIML-IzCLg" +
+    "AaEGgAIB"
 
   function regionTiles({ north, south, west, east }, zoom) {
     if (![north, south, west, east].every(Number.isFinite) || north < south) throw new RangeError("Invalid region")
@@ -253,6 +273,9 @@
       const url = new URL(withTiles(template, chunk))
       for (const [key, value] of Object.entries(options.params)) url.searchParams.set(key, value)
       const response = await fetcher(url.href, { credentials: "same-origin", cache: "no-store" })
+      if (response.status === 410) {
+        throw new Error("Tile read failed: HTTP 410, the template expired; capture a fresh one with templateFrom")
+      }
       if (!response.ok) throw new Error(`Tile read failed: HTTP ${response.status}`)
       const decoded = decodeResponse(await response.arrayBuffer())
       const returned = new Set(decoded.map(tile => tile.tile.join("/")))
@@ -264,7 +287,7 @@
 
   // layers, withTiles, and decodeResponse are exported as test seams.
   const protocol = Object.freeze({
-    savedMarkersTemplate, layers, withTiles, decodeResponse, mergeMarkers, regionTiles, savedMarkers,
+    savedMarkersTemplate, templateFrom, layers, withTiles, decodeResponse, mergeMarkers, regionTiles, savedMarkers,
   })
   if (typeof module === "object" && module.exports) module.exports = protocol
   else root.googleMapsSavedPlacesTiles = protocol

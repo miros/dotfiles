@@ -18,7 +18,10 @@ memberships through the UI.
 1. Open one working tab with `new_page` at `https://www.google.com/maps` and
    reuse it for the whole task.
 2. Load [scripts/protocol.js](scripts/protocol.js) with `evaluate_script`,
-   using its absolute `sourcePath` and `format: "script"`.
+   using its absolute `sourcePath` and `format: "script"`. If the load fails
+   with "not within any of the configured workspace roots", tell the user to
+   add `--workspace=<absolute skills directory>` to the chrome-devtools MCP
+   command and restart the harness.
 3. Connect once:
 
    ```js
@@ -111,8 +114,10 @@ batch: reload the tab, reconnect, and rerun the same call.
 
 - Write-token positions in the page state are tied to the Maps build; see
   [references/api.md](references/api.md) to remap them if `connect()` fails.
-- Use network inspection (`get_network_request`) only for the tile-template
-  remap in [references/tiles.md](references/tiles.md); it prints cookies.
+- When `savedMarkers` fails with "template expired" (HTTP 410), capture a
+  fresh template as described in [references/tiles.md](references/tiles.md).
+  Use network inspection (`get_network_request`) only for that step; it prints
+  cookies.
 
 ## Tests
 

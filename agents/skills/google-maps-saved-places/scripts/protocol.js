@@ -155,18 +155,20 @@
     }
 
     // Returns null for the stub records some saved places have instead of a
-    // name and memberships.
+    // name and memberships. Tile markers can carry a short "0x0:..." ID that
+    // reads work with but writes silently ignore, so the record's own ID wins.
     async function readPlace(hex) {
       const record = (await get("/maps/preview/place", "!1m1!1s" + hex))?.[6]
       if (!record?.[11]) return null
       const rows = record[25]?.[15] ?? []
+      const canonical = /^0x[0-9a-f]+:0x[0-9a-f]+$/i.test(record[10] ?? "") ? record[10] : hex
       return {
         name: record[11],
         lat: record[9]?.[2],
         lng: record[9]?.[3],
         address: record[18] ?? null,
         countryCode: record[243] ?? record[183]?.[1]?.[6] ?? record[88]?.[2]?.[1] ?? null,
-        featureIds: featureDecimal(hex),
+        featureIds: featureDecimal(canonical),
         starred: rows.some(row => row[1] === "STARRED"),
         lists: rows.map(row => row[0]?.[0]?.[1]).filter(Boolean),
       }
