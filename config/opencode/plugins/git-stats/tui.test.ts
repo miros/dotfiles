@@ -1,4 +1,5 @@
 import { afterEach, expect, mock, test } from "bun:test"
+import { rgbToHex } from "@opentui/core"
 import type { Plugin } from "@opencode/plugin/tui"
 import { createElement, insert, testRender, type JSX } from "@opentui/solid"
 import { execFileSync } from "node:child_process"
@@ -43,6 +44,7 @@ async function createHarness(options: {
   const directories = options.directories ?? { "session-a": "/repo-a", "session-b": "/repo-b" }
   const readStats = mock(options.readStats ?? (async () => ({ additions: 3, deletions: 1 })))
   const handlers = new Set<ToolSuccessHandler>()
+  const dispatch = mock(() => {})
   let slot: Slot | undefined
   const context = {
     data: {
@@ -56,6 +58,7 @@ async function createHarness(options: {
       },
     },
     theme: { text: { muted: "#888888" } },
+    keymap: { dispatch },
     ui: {
       slot: (claim: Slot) => {
         slot = claim
@@ -76,7 +79,11 @@ async function createHarness(options: {
   return {
     ...view,
     readStats,
+    dispatch,
     handlers,
+    labelColor() {
+      return rgbToHex(view.captureSpans().lines[0]!.spans.find(span => span.text.includes("+"))!.fg)
+    },
     setSessionID,
     succeedTool(id = sessionID()!) {
       for (const handler of handlers) handler({ data: { sessionID: id } })
@@ -207,4 +214,30 @@ test("does not load stats without a session", async () => {
   expect(view.readStats).toHaveBeenCalledTimes(1)
   expect(view.captureCharFrame()).not.toContain("+")
   expect(view.handlers.size).toBe(0)
+})
+
+test("opens Zed when the label is clicked", async () => {
+  const view = await createHarness()
+  await view.mockMouse.click(2, 0)
+  expect(view.dispatch).toHaveBeenCalledWith("local.zed.open")
+})
+
+test("does not open Zed when the press moves off the label", async () => {
+  const view = await createHarness()
+  await view.mockMouse.pressDown(2, 0)
+  await view.mockMouse.moveTo(2, 2)
+  await view.mockMouse.moveTo(2, 0)
+  await view.mockMouse.release(2, 0)
+  expect(view.dispatch).not.toHaveBeenCalled()
+})
+
+test("shows the label in white while hovered", async () => {
+  const view = await createHarness()
+  expect(view.labelColor()).toBe("#888888")
+  await view.mockMouse.moveTo(2, 0)
+  await view.flush()
+  expect(view.labelColor()).toBe("#ffffff")
+  await view.mockMouse.moveTo(20, 2)
+  await view.flush()
+  expect(view.labelColor()).toBe("#888888")
 })

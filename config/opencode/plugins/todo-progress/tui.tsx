@@ -1,5 +1,5 @@
 import { Plugin } from "@opencode/plugin/tui"
-import { createEffect, createMemo, onCleanup, Show } from "solid-js"
+import { createEffect, createMemo, createSignal, onCleanup, Show } from "solid-js"
 
 type Todo = {
   status: "pending" | "in_progress" | "completed" | "cancelled"
@@ -38,6 +38,7 @@ function TodoProgress(props: {
   openSidebar: () => void
 }) {
   let pressedSessionID: string | undefined
+  const [hovered, setHovered] = createSignal(false)
 
   createEffect(() => {
     void props.sessionID
@@ -55,7 +56,7 @@ function TodoProgress(props: {
   return (
     <Show when={label()}>
       <text
-        fg={props.context.theme.text.muted}
+        fg={hovered() ? "#ffffff" : props.context.theme.text.muted}
         selectable={false}
         onMouseDown={event => {
           if (event.button !== 0) return
@@ -71,7 +72,9 @@ function TodoProgress(props: {
           pressedSessionID = undefined
           if (clickedSessionID && clickedSessionID === props.sessionID) props.openSidebar()
         }}
+        onMouseOver={() => setHovered(true)}
         onMouseOut={() => {
+          setHovered(false)
           pressedSessionID = undefined
         }}
         onMouseDrag={() => {

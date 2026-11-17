@@ -105,9 +105,46 @@ function GitStatsLabel(props: {
     return `+${current.additions},-${current.deletions}`
   }
 
+  const [hovered, setHovered] = createSignal(false)
+  let pressedSessionID: string | undefined
+
+  createEffect(() => {
+    void props.sessionID
+    pressedSessionID = undefined
+  })
+
   return (
     <Show when={label()}>
-      <text fg={props.context.theme.text.muted} selectable={false}>{label()}</text>
+      <text
+        fg={hovered() ? "#ffffff" : props.context.theme.text.muted}
+        selectable={false}
+        onMouseDown={event => {
+          if (event.button !== 0) return
+          event.stopPropagation()
+          event.preventDefault()
+          pressedSessionID = props.sessionID
+        }}
+        onMouseUp={event => {
+          if (event.button !== 0) return
+          event.stopPropagation()
+          event.preventDefault()
+          const clickedSessionID = pressedSessionID
+          pressedSessionID = undefined
+          if (clickedSessionID && clickedSessionID === props.sessionID) {
+            props.context.keymap.dispatch("local.zed.open")
+          }
+        }}
+        onMouseOver={() => setHovered(true)}
+        onMouseOut={() => {
+          setHovered(false)
+          pressedSessionID = undefined
+        }}
+        onMouseDrag={() => {
+          pressedSessionID = undefined
+        }}
+      >
+        {label()}
+      </text>
     </Show>
   )
 }

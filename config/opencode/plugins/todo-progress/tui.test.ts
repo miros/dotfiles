@@ -1,4 +1,5 @@
 import { afterEach, expect, mock, test } from "bun:test"
+import { rgbToHex } from "@opentui/core"
 import type { Plugin } from "@opencode/plugin/tui"
 import { createElement, insert, setProp, testRender, type JSX } from "@opentui/solid"
 import { createComponent, createSignal, Show } from "solid-js"
@@ -307,4 +308,17 @@ test("right-clicking the counter does not open the sidebar", async () => {
   const view = await createHarness()
   await view.mockMouse.click(2, 0, 2)
   expect(view.dispatch).not.toHaveBeenCalled()
+})
+
+test("shows the label in white while hovered", async () => {
+  const view = await createHarness()
+  const labelColor = () =>
+    rgbToHex(view.captureSpans().lines[0]!.spans.find(span => span.text.includes("todo:"))!.fg)
+  expect(labelColor()).toBe("#888888")
+  await view.mockMouse.moveTo(2, 0)
+  await view.flush()
+  expect(labelColor()).toBe("#ffffff")
+  await view.mockMouse.moveTo(20, 2)
+  await view.flush()
+  expect(labelColor()).toBe("#888888")
 })
