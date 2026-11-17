@@ -3,7 +3,7 @@ description: Commit changes, open a draft PR, and request a Copilot review
 ---
 
 1. Commit all unstaged changes in one or more commits.
-2. Open a draft PR.
+2. Push with `git push -u origin HEAD:<branch>`, then open a draft PR.
 3. Request a review from Copilot.
 4. Give me the link to the PR as last line of your response.
 
