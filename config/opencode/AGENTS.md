@@ -8,6 +8,9 @@
 - If you find yourself in the wrong project path (user started agent at wrong location), stop and notify user.
 - While you work, user and other agents might be working in same folder as well. Do not be alerted and do not alert user about changes. If some of your code was deleted assume that was on purpose.
 - Do not add descriptions to git commits unless asked explicitly. One line commit message is enough by default.
+- Refactoring and code improvement is an ongoing work. "Out of scope of this ticket" in most cases is not a reasonable suggestion.
+- When asked to create a ticket do not perform "ticket theater", we need reader to understand the problem.
+- When discussing engineering problems with user pay attention to code names, such as function, field or variable names, that the text uses without saying what they are. The user then has to stop reading, switch to the diff/code and search for them.
 
 # Rules for working with code
 
@@ -22,6 +25,7 @@
 - Do not write comments explaining rejected options.
 - Do not write comments longer than 3 sentences. Intent should be expressed by correct symbol naming in code.
 - Whan you are asked to post github comments on user's behalf, start the post by stating that your are AI agent and name what model are you using. Example: "AI agent here. I am MODE_NAME_AND_VERSION."
+- Do not mechanically add all comments to functions signatures. If comment is only relevant for some specific part of a function, add it there. If comment is about some specific reason to call the function, add it to the call site. 
 
 ## Tests
 
@@ -52,3 +56,4 @@ Apply these rules to code comments, documentation, PR descriptions, PR comments,
 - Do not write phrases for quotation or emphasis.
 - Use em dashes only to introduce enumerations.
 - Rewrite any sentence that sounds clever in plainer language.
+- Do not use figurative verbs.

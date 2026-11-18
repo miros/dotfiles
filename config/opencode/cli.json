@@ -19,7 +19,7 @@
     "indicators": "status"
   },
   "session": {
-    "sidebar": "hide",
+    "sidebar": "auto",
     "scrollbar": false,
     "thinking": "show"
   },
